@@ -56,7 +56,7 @@ export default function AdminVideosPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+          <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <Video className="w-6 h-6 text-brand-green" />
             YouTube Videos
           </h2>
@@ -106,7 +106,7 @@ export default function AdminVideosPage() {
                   </div>
                 </div>
                 <div className="p-4">
-                  <h3 className="font-heading font-bold text-brand-deep-navy mb-1 line-clamp-1">{video.title}</h3>
+                  <h3 className="font-heading font-bold text-foreground mb-1 line-clamp-1">{video.title}</h3>
                   {video.category && <span className="text-[10px] font-medium bg-muted px-2 py-0.5 rounded text-foreground-secondary">{video.category}</span>}
                   <div className="flex items-center gap-2 pt-3 mt-3 border-t border-border-light">
                     <button onClick={() => toggleFeatured(video.id, video.featured)} className={`p-2 rounded-lg transition ${video.featured ? 'text-amber-500 bg-amber-50' : 'text-foreground-secondary/30 hover:text-amber-500'}`}>

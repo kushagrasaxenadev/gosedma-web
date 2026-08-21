@@ -52,7 +52,7 @@ export default function SummerCampsPage() {
           </div>
 
           <div className="card p-8 text-center">
-            <h3 className="font-heading font-bold text-xl text-brand-deep-navy mb-4">
+            <h3 className="font-heading font-bold text-xl text-foreground mb-4">
               Enquire About Our Next Summer Camp
             </h3>
             <p className="text-foreground-secondary mb-6">

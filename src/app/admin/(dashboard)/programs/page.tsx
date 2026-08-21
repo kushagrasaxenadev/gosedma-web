@@ -57,7 +57,7 @@ export default function AdminProgramsPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+          <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-brand-green" />
             Training Programs
           </h2>
@@ -106,7 +106,7 @@ export default function AdminProgramsPage() {
                       <div className="flex items-center gap-3">
                         <GripVertical className="w-4 h-4 text-foreground-secondary/30 flex-shrink-0 cursor-grab" />
                         <div>
-                          <p className="font-semibold text-brand-deep-navy">{program.title}</p>
+                          <p className="font-semibold text-foreground">{program.title}</p>
                           {program.subtitle && <p className="text-xs text-foreground-secondary mt-0.5 truncate max-w-[200px]">{program.subtitle}</p>}
                         </div>
                       </div>

@@ -30,7 +30,7 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+        <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
           <Users className="w-6 h-6 text-brand-green" />
           Admin Users
         </h2>
@@ -56,7 +56,7 @@ export default function AdminUsersPage() {
                   {(user.full_name || 'A').charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-brand-deep-navy">{user.full_name || 'Admin User'}</h4>
+                  <h4 className="font-semibold text-foreground">{user.full_name || 'Admin User'}</h4>
                   <div className="flex items-center gap-3 mt-1">
                     <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${user.role === 'super_admin' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
                       {user.role === 'super_admin' ? <><ShieldCheck className="w-3 h-3" /> Super Admin</> : <><Shield className="w-3 h-3" /> Content Admin</>}

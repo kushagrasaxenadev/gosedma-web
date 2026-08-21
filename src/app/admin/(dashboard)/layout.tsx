@@ -94,7 +94,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       <main className="flex-1 flex flex-col overflow-x-hidden">
         <header className="bg-white border-b border-border-light h-16 flex items-center justify-between px-6 md:px-8">
           <div className="flex items-center gap-2 text-foreground-secondary text-sm">
-            <span className="font-semibold text-brand-deep-navy">Admin Portal</span>
+            <span className="font-semibold text-foreground">Admin Portal</span>
             <span>/</span>
             <span>Dashboard</span>
           </div>

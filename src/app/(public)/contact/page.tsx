@@ -89,13 +89,13 @@ export default function ContactPage() {
                   className="card p-5 flex items-center gap-4 hover:border-brand-green/30"
                 >
                   <div className="w-12 h-12 rounded-full bg-brand-navy/5 flex items-center justify-center shrink-0 group-hover:bg-brand-green/10 transition-colors">
-                    <method.icon className="w-6 h-6 text-brand-navy" />
+                    <method.icon className="w-6 h-6 text-brand-navy dark:text-brand-green-light" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-bold text-lg text-brand-deep-navy mb-0.5">
+                    <h3 className="font-heading font-bold text-lg text-foreground mb-0.5">
                       {method.title}
                     </h3>
-                    <p className="text-brand-navy text-sm font-semibold mb-0.5">{method.value}</p>
+                    <p className="text-brand-navy dark:text-brand-green-light text-sm font-semibold mb-0.5">{method.value}</p>
                     <p className="text-xs text-muted-foreground">{method.description}</p>
                   </div>
                 </a>
@@ -123,7 +123,7 @@ export default function ContactPage() {
                   <div className="flex items-start gap-3 mb-3">
                     <MapPin className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
                     <div>
-                      <h3 className="font-heading font-bold text-lg text-brand-deep-navy">
+                      <h3 className="font-heading font-bold text-lg text-foreground">
                         {branch.name}
                       </h3>
                       <p className="text-sm text-foreground-secondary">{branch.address}</p>
@@ -137,8 +137,8 @@ export default function ContactPage() {
 
           {/* Hours */}
           <div className="max-w-md mx-auto card p-6 text-center">
-            <Clock className="w-8 h-8 text-brand-navy mx-auto mb-3" />
-            <h3 className="font-heading font-bold text-lg text-brand-deep-navy mb-2">
+            <Clock className="w-8 h-8 text-brand-navy dark:text-brand-green-light mx-auto mb-3" />
+            <h3 className="font-heading font-bold text-lg text-foreground mb-2">
               Training Hours
             </h3>
             <p className="text-sm text-foreground-secondary">

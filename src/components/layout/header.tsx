@@ -130,7 +130,7 @@ export function Header() {
                 priority
               />
               <div className="hidden xs:block">
-                <span className="block text-brand-deep-navy dark:text-white font-heading font-bold text-lg leading-tight tracking-wide">
+                <span className="block text-foreground dark:text-white font-heading font-bold text-lg leading-tight tracking-wide">
                   GOSEDMA
                 </span>
                 <span className="block text-[10px] text-muted-foreground dark:text-white/60 leading-tight">
@@ -276,7 +276,7 @@ export function Header() {
           <div className="flex items-center justify-between p-4 border-b border-border-light dark:border-white/10">
             <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
               <Image src="/images/logo-circular.png" alt="GOSEDMA" width={36} height={36} className="w-9 h-9" />
-              <span className="font-heading font-bold text-lg text-brand-deep-navy dark:text-white">GOSEDMA</span>
+              <span className="font-heading font-bold text-lg text-foreground dark:text-white">GOSEDMA</span>
             </Link>
             <button
               onClick={() => setMobileOpen(false)}

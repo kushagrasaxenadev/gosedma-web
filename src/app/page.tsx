@@ -209,15 +209,15 @@ function ProgramsSection() {
             <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
               <Card className="h-full p-6 group-hover:border-brand-green/30 transition-all">
                 <div className="w-12 h-12 rounded-xl bg-brand-navy/5 flex items-center justify-center mb-4 group-hover:bg-brand-green/10 transition-colors">
-                  <program.icon className="w-6 h-6 text-brand-navy group-hover:text-brand-green transition-colors" />
+                  <program.icon className="w-6 h-6 text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
                 </div>
-                <h3 className="font-heading font-bold text-xl text-brand-deep-navy mb-2">
+                <h3 className="font-heading font-bold text-xl text-foreground mb-2">
                   {program.title}
                 </h3>
                 <p className="text-sm text-foreground-secondary leading-relaxed mb-4">
                   {program.description}
                 </p>
-                <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy group-hover:text-brand-green transition-colors">
+                <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
                   Learn More
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </span>
@@ -282,7 +282,7 @@ function WhySection() {
                 <div key={reason.title} className="flex gap-3">
                   <CheckCircle className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
                   <div>
-                    <h3 className="font-heading font-bold text-brand-deep-navy mb-0.5">
+                    <h3 className="font-heading font-bold text-foreground mb-0.5">
                       {reason.title}
                     </h3>
                     <p className="text-sm text-foreground-secondary">{reason.description}</p>
@@ -309,7 +309,7 @@ function WhySection() {
                 <Trophy className="w-6 h-6 text-brand-green" />
               </div>
               <div>
-                <p className="font-heading font-bold text-lg text-brand-deep-navy">Since {SITE_CONFIG.establishedYear}</p>
+                <p className="font-heading font-bold text-lg text-foreground">Since {SITE_CONFIG.establishedYear}</p>
                 <p className="text-xs text-muted-foreground">Years of Training Excellence</p>
               </div>
             </div>
@@ -461,13 +461,13 @@ function BranchesSection() {
             <Link href={`/branches/${branch.slug}`} key={branch.slug} className="group">
               <Card className="p-6 text-center group-hover:border-brand-navy/30">
                 <div className="w-14 h-14 mx-auto rounded-full bg-brand-navy/5 flex items-center justify-center mb-4 group-hover:bg-brand-navy/10 transition-colors">
-                  <MapPin className="w-7 h-7 text-brand-navy" />
+                  <MapPin className="w-7 h-7 text-brand-navy dark:text-brand-green-light" />
                 </div>
-                <h3 className="font-heading font-bold text-xl text-brand-deep-navy mb-1">
+                <h3 className="font-heading font-bold text-xl text-foreground mb-1">
                   {branch.name}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-3">{branch.description}</p>
-                <span className="text-sm font-semibold text-brand-navy group-hover:text-brand-green transition-colors">
+                <span className="text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
                   View Details →
                 </span>
               </Card>
@@ -568,9 +568,9 @@ function FAQPreview() {
         <div className="space-y-4">
           {faqs.map((faq) => (
             <details key={faq.q} className="card p-5 group cursor-pointer">
-              <summary className="flex items-center justify-between font-heading font-bold text-brand-deep-navy list-none">
+              <summary className="flex items-center justify-between font-heading font-bold text-foreground list-none">
                 {faq.q}
-                <ChevronRight className="w-5 h-5 text-brand-navy shrink-0 transition-transform group-open:rotate-90" />
+                <ChevronRight className="w-5 h-5 text-brand-navy dark:text-brand-green-light shrink-0 transition-transform group-open:rotate-90" />
               </summary>
               <p className="mt-3 text-sm text-foreground-secondary leading-relaxed">
                 {faq.a}

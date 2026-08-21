@@ -55,7 +55,7 @@ export default function CorporateWorkshopsPage() {
           </div>
 
           <div className="card p-8 text-center">
-            <h3 className="font-heading font-bold text-xl text-brand-deep-navy mb-4">
+            <h3 className="font-heading font-bold text-xl text-foreground mb-4">
               Interested in a Corporate Workshop?
             </h3>
             <p className="text-foreground-secondary mb-6">

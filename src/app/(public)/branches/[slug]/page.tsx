@@ -97,16 +97,16 @@ export default async function BranchDetailPage({ params }: PageProps) {
         <div className="container-wide">
           <div className="grid lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
-              <h2 className="font-heading font-bold text-2xl text-brand-deep-navy mb-4">Location Details</h2>
+              <h2 className="font-heading font-bold text-2xl text-foreground mb-4">Location Details</h2>
               <div className="flex gap-3 mb-8 p-5 bg-muted/50 border border-border-light rounded-xl">
                 <MapPin className="w-6 h-6 text-brand-green shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-brand-deep-navy">Address</h3>
+                  <h3 className="font-semibold text-foreground">Address</h3>
                   <p className="text-foreground-secondary">{branch.address}</p>
                 </div>
               </div>
 
-              <h2 className="font-heading font-bold text-2xl text-brand-deep-navy mb-4">Branch Timings</h2>
+              <h2 className="font-heading font-bold text-2xl text-foreground mb-4">Branch Timings</h2>
               <div className="flex gap-3 p-5 bg-muted/50 border border-border-light rounded-xl">
                 <Clock className="w-6 h-6 text-brand-green shrink-0 mt-0.5" />
                 <div>
@@ -119,13 +119,13 @@ export default async function BranchDetailPage({ params }: PageProps) {
 
             <div>
               <Card className="p-6 sticky top-24">
-                <h3 className="font-heading font-bold text-xl text-brand-deep-navy mb-5">Get in Touch</h3>
+                <h3 className="font-heading font-bold text-xl text-foreground mb-5">Get in Touch</h3>
                 <div className="space-y-4 mb-6">
                   <a href={`tel:${branch.phone}`} className="flex items-center gap-3 p-3 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
-                    <Phone className="w-5 h-5 text-brand-navy" />
+                    <Phone className="w-5 h-5 text-brand-navy dark:text-brand-green-light" />
                     <div>
                       <p className="text-xs text-muted-foreground">Call Us</p>
-                      <p className="text-sm font-semibold text-brand-deep-navy">{branch.phone}</p>
+                      <p className="text-sm font-semibold text-foreground">{branch.phone}</p>
                     </div>
                   </a>
                   <a
@@ -137,7 +137,7 @@ export default async function BranchDetailPage({ params }: PageProps) {
                     <MessageCircle className="w-5 h-5 text-[#25D366]" />
                     <div>
                       <p className="text-xs text-muted-foreground">WhatsApp Us</p>
-                      <p className="text-sm font-semibold text-brand-deep-navy">Chat Now</p>
+                      <p className="text-sm font-semibold text-foreground">Chat Now</p>
                     </div>
                   </a>
                 </div>

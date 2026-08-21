@@ -119,7 +119,7 @@ export default function TrialEnquiriesPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+          <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <UserCheck className="w-6 h-6 text-brand-green" />
             Trial Class Bookings
           </h2>
@@ -205,13 +205,13 @@ export default function TrialEnquiriesPage() {
                           {new Date(enquiry.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </span>
                       </div>
-                      <h4 className="font-semibold text-brand-deep-navy truncate">{displayName}</h4>
+                      <h4 className="font-semibold text-foreground truncate">{displayName}</h4>
                       <div className="flex items-center gap-3 text-xs text-foreground-secondary">
                         <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{enquiry.phone}</span>
                         {enquiry.email && <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{enquiry.email}</span>}
                       </div>
                       {(enquiry.selected_program || enquiry.interested_program) && (
-                        <p className="text-xs text-brand-navy font-medium">
+                        <p className="text-xs text-brand-navy dark:text-brand-green-light font-medium">
                           Program: {enquiry.selected_program || enquiry.interested_program}
                         </p>
                       )}
@@ -229,7 +229,7 @@ export default function TrialEnquiriesPage() {
           {selectedEnquiry ? (
             <div className="space-y-5">
               <div>
-                <h3 className="font-heading font-bold text-lg text-brand-deep-navy">
+                <h3 className="font-heading font-bold text-lg text-foreground">
                   {selectedEnquiry.student_name || selectedEnquiry.name}
                 </h3>
                 <p className="text-xs text-foreground-secondary mt-0.5">

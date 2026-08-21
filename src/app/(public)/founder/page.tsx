@@ -98,7 +98,7 @@ export default function FounderPage() {
             Training Philosophy
           </h2>
           <blockquote className="border-l-4 border-brand-green pl-6 py-2 mb-6">
-            <p className="text-xl font-heading text-brand-deep-navy italic">
+            <p className="text-xl font-heading text-foreground italic">
               &quot;Martial arts is not just about fighting — it&apos;s about building character,
               discipline, and the confidence to stand up for yourself and others.&quot;
             </p>
@@ -115,7 +115,7 @@ export default function FounderPage() {
       {/* CTA */}
       <section className="section-padding">
         <div className="container-narrow text-center">
-          <h2 className="font-heading font-bold text-3xl text-brand-deep-navy mb-4">
+          <h2 className="font-heading font-bold text-3xl text-foreground mb-4">
             Train Under Expert Guidance
           </h2>
           <p className="text-foreground-secondary mb-8 max-w-lg mx-auto">

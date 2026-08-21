@@ -46,7 +46,7 @@ export default function AdminBranchesPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+          <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <MapPin className="w-6 h-6 text-brand-green" />
             Academy Branches
           </h2>
@@ -76,7 +76,7 @@ export default function AdminBranchesPage() {
           branches.map(branch => (
             <div key={branch.id} className="bg-white rounded-xl border border-border-light shadow-sm p-6 hover:shadow-md transition group">
               <div className="flex items-start justify-between mb-3">
-                <h3 className="font-heading font-bold text-brand-deep-navy text-lg">{branch.name}</h3>
+                <h3 className="font-heading font-bold text-foreground text-lg">{branch.name}</h3>
                 <button onClick={() => togglePublished(branch.id, branch.published)}
                   className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border transition ${branch.published ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}>
                   {branch.published ? 'Live' : 'Draft'}
@@ -96,7 +96,7 @@ export default function AdminBranchesPage() {
               </div>
 
               <div className="flex items-center gap-2 pt-3 border-t border-border-light">
-                <button className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-lg text-brand-navy bg-brand-navy/5 hover:bg-brand-navy/10 transition">
+                <button className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-lg text-brand-navy dark:text-brand-green-light bg-brand-navy/5 hover:bg-brand-navy/10 transition">
                   <Edit3 className="w-3.5 h-3.5" /> Edit
                 </button>
                 <button onClick={() => deleteBranch(branch.id, branch.name)} className="flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition">

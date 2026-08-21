@@ -76,7 +76,7 @@ export function WorkshopForm() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="font-heading font-bold text-2xl text-brand-deep-navy mb-2">Request Submitted!</h3>
+        <h3 className="font-heading font-bold text-2xl text-foreground mb-2">Request Submitted!</h3>
         <p className="text-foreground-secondary mb-6">{message}</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button variant="outline" onClick={() => setStatus('idle')}>
@@ -98,7 +98,7 @@ export function WorkshopForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-xl mx-auto card p-6 md:p-8 bg-surface">
-      <h3 className="font-heading font-bold text-2xl text-brand-deep-navy border-b border-border-light pb-3">
+      <h3 className="font-heading font-bold text-2xl text-foreground border-b border-border-light pb-3">
         School / Institutional Workshop Enquiry
       </h3>
 

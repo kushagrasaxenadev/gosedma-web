@@ -162,7 +162,7 @@ export default function SchoolWorkshopsPage() {
                 <div className="w-12 h-12 rounded-xl bg-brand-green/10 flex items-center justify-center mb-4">
                   <benefit.icon className="w-6 h-6 text-brand-green" />
                 </div>
-                <h3 className="font-heading font-bold text-lg text-brand-deep-navy mb-2">
+                <h3 className="font-heading font-bold text-lg text-foreground mb-2">
                   {benefit.title}
                 </h3>
                 <p className="text-sm text-foreground-secondary leading-relaxed">
@@ -188,7 +188,7 @@ export default function SchoolWorkshopsPage() {
             {workshopTypes.map((workshop) => (
               <div key={workshop.title} className="card p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <h3 className="font-heading font-bold text-lg text-brand-deep-navy">
+                  <h3 className="font-heading font-bold text-lg text-foreground">
                     {workshop.title}
                   </h3>
                 </div>
@@ -240,7 +240,7 @@ export default function SchoolWorkshopsPage() {
                   {item.step}
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-brand-deep-navy mb-1">
+                  <h3 className="font-heading font-bold text-lg text-foreground mb-1">
                     {item.title}
                   </h3>
                   <p className="text-sm text-foreground-secondary">{item.description}</p>

@@ -31,9 +31,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       secondary:
         'bg-brand-green text-white hover:bg-brand-green-dark focus-visible:outline-brand-green shadow-sm hover:shadow-md active:scale-[0.98]',
       outline:
-        'border-2 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white focus-visible:outline-brand-navy active:scale-[0.98]',
+        'border-2 border-brand-navy text-brand-navy dark:text-brand-green-light hover:bg-brand-navy hover:text-white focus-visible:outline-brand-navy active:scale-[0.98]',
       ghost:
-        'text-brand-navy hover:bg-brand-navy/5 focus-visible:outline-brand-navy',
+        'text-brand-navy dark:text-brand-green-light hover:bg-brand-navy/5 focus-visible:outline-brand-navy',
       whatsapp:
         'bg-[#25D366] text-white hover:bg-[#20BD5A] focus-visible:outline-[#25D366] shadow-sm hover:shadow-md active:scale-[0.98]',
       danger:

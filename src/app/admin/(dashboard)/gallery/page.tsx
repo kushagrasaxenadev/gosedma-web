@@ -45,7 +45,7 @@ export default function AdminGalleryPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+          <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <ImageIcon className="w-6 h-6 text-brand-green" />
             Photo Gallery
           </h2>
@@ -86,11 +86,11 @@ export default function AdminGalleryPage() {
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-heading font-bold text-brand-deep-navy mb-1">{album.title}</h3>
+                <h3 className="font-heading font-bold text-foreground mb-1">{album.title}</h3>
                 {album.album_date && <p className="text-xs text-foreground-secondary flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(album.album_date).toLocaleDateString('en-IN')}</p>}
                 {album.description && <p className="text-xs text-foreground-secondary mt-1.5 line-clamp-2">{album.description}</p>}
                 <div className="flex items-center gap-2 pt-3 mt-3 border-t border-border-light">
-                  <button onClick={() => togglePublished(album.id, album.published)} className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-lg text-brand-navy bg-brand-navy/5 hover:bg-brand-navy/10 transition">
+                  <button onClick={() => togglePublished(album.id, album.published)} className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-lg text-brand-navy dark:text-brand-green-light bg-brand-navy/5 hover:bg-brand-navy/10 transition">
                     {album.published ? <><EyeOff className="w-3.5 h-3.5" /> Unpublish</> : <><Eye className="w-3.5 h-3.5" /> Publish</>}
                   </button>
                   <button className="flex items-center justify-center text-xs font-semibold py-2 px-3 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 transition">

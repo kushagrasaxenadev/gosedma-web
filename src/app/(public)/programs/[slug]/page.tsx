@@ -143,12 +143,12 @@ export default async function ProgramDetailPage({ params }: PageProps) {
         <div className="container-wide">
           <div className="grid lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
-              <h2 className="font-heading font-bold text-2xl text-brand-deep-navy mb-4">About the Program</h2>
+              <h2 className="font-heading font-bold text-2xl text-foreground mb-4">About the Program</h2>
               <p className="text-foreground-secondary leading-relaxed mb-8">
                 {program.longDescription}
               </p>
 
-              <h2 className="font-heading font-bold text-2xl text-brand-deep-navy mb-4">Key Benefits</h2>
+              <h2 className="font-heading font-bold text-2xl text-foreground mb-4">Key Benefits</h2>
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {program.benefits.map((benefit) => (
                   <div key={benefit} className="flex items-start gap-3 p-4 rounded-xl bg-muted/50 border border-border-light">
@@ -161,11 +161,11 @@ export default async function ProgramDetailPage({ params }: PageProps) {
 
             <div>
               <Card className="p-6 sticky top-24">
-                <h3 className="font-heading font-bold text-xl text-brand-deep-navy mb-3">Program Details</h3>
+                <h3 className="font-heading font-bold text-xl text-foreground mb-3">Program Details</h3>
                 <div className="space-y-4 mb-6">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase font-semibold">Pricing</p>
-                    <p className="text-sm font-semibold text-brand-deep-navy">{program.pricingNote || 'Contact Academy'}</p>
+                    <p className="text-sm font-semibold text-foreground">{program.pricingNote || 'Contact Academy'}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase font-semibold">Schedule</p>

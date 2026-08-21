@@ -169,17 +169,17 @@ export default function ProgramsPage() {
                 <Card className="h-full p-6 group-hover:border-brand-green/30">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-xl bg-brand-navy/5 flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
-                      <program.icon className="w-6 h-6 text-brand-navy group-hover:text-brand-green transition-colors" />
+                      <program.icon className="w-6 h-6 text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
                     </div>
                     <Badge variant="muted">{program.category}</Badge>
                   </div>
-                  <h3 className="font-heading font-bold text-xl text-brand-deep-navy mb-2">
+                  <h3 className="font-heading font-bold text-xl text-foreground mb-2">
                     {program.title}
                   </h3>
                   <p className="text-sm text-foreground-secondary leading-relaxed mb-4">
                     {program.description}
                   </p>
-                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy group-hover:text-brand-green transition-colors">
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
                     Learn More
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -205,16 +205,16 @@ export default function ProgramsPage() {
               <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
                 <Card className="h-full p-6 group-hover:border-brand-navy/30">
                   <div className="flex items-center gap-3 mb-3">
-                    <program.icon className="w-5 h-5 text-brand-navy" />
+                    <program.icon className="w-5 h-5 text-brand-navy dark:text-brand-green-light" />
                     <Badge variant="muted">{program.category}</Badge>
                   </div>
-                  <h3 className="font-heading font-bold text-lg text-brand-deep-navy mb-2">
+                  <h3 className="font-heading font-bold text-lg text-foreground mb-2">
                     {program.title}
                   </h3>
                   <p className="text-sm text-foreground-secondary leading-relaxed mb-3">
                     {program.description}
                   </p>
-                  <span className="text-sm font-semibold text-brand-navy group-hover:text-brand-green transition-colors">
+                  <span className="text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
                     Learn More →
                   </span>
                 </Card>
@@ -227,7 +227,7 @@ export default function ProgramsPage() {
       {/* CTA */}
       <section className="section-padding">
         <div className="container-narrow text-center">
-          <h2 className="font-heading font-bold text-3xl text-brand-deep-navy mb-4">
+          <h2 className="font-heading font-bold text-3xl text-foreground mb-4">
             Not sure which program is right for you?
           </h2>
           <p className="text-foreground-secondary mb-8 max-w-lg mx-auto">

@@ -119,15 +119,15 @@ export default function FAQPage() {
         <div className="container-narrow">
           {faqCategories.map((category) => (
             <div key={category.title} className="mb-12 last:mb-0">
-              <h2 className="font-heading font-bold text-2xl text-brand-deep-navy mb-5">
+              <h2 className="font-heading font-bold text-2xl text-foreground mb-5">
                 {category.title}
               </h2>
               <div className="space-y-3">
                 {category.faqs.map((faq) => (
                   <details key={faq.q} className="card p-5 group cursor-pointer">
-                    <summary className="flex items-center justify-between font-heading font-bold text-brand-deep-navy list-none">
+                    <summary className="flex items-center justify-between font-heading font-bold text-foreground list-none">
                       {faq.q}
-                      <ChevronRight className="w-5 h-5 text-brand-navy shrink-0 ml-4 transition-transform group-open:rotate-90" />
+                      <ChevronRight className="w-5 h-5 text-brand-navy dark:text-brand-green-light shrink-0 ml-4 transition-transform group-open:rotate-90" />
                     </summary>
                     <p className="mt-3 text-sm text-foreground-secondary leading-relaxed">
                       {faq.a}
@@ -143,7 +143,7 @@ export default function FAQPage() {
       {/* CTA */}
       <section className="section-padding bg-muted">
         <div className="container-narrow text-center">
-          <h2 className="font-heading font-bold text-2xl text-brand-deep-navy mb-4">
+          <h2 className="font-heading font-bold text-2xl text-foreground mb-4">
             Still have questions?
           </h2>
           <p className="text-foreground-secondary mb-6">

@@ -64,7 +64,7 @@ export default function TrialPage() {
               </div>
 
               <div className="p-5 rounded-xl bg-muted border border-border-light">
-                <p className="text-sm font-medium text-brand-deep-navy mb-1">What to bring:</p>
+                <p className="text-sm font-medium text-foreground mb-1">What to bring:</p>
                 <p className="text-sm text-foreground-secondary">
                   Comfortable workout clothing, water bottle. No special equipment needed for your first class.
                 </p>

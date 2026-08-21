@@ -63,7 +63,7 @@ export default function AdminFounderPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+          <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <Award className="w-6 h-6 text-brand-green" />
             Founder Bio & Awards
           </h2>
@@ -102,7 +102,7 @@ export default function AdminFounderPage() {
                       <span className="text-[10px] font-medium bg-muted px-2 py-0.5 rounded text-foreground-secondary">{typeInfo.label}</span>
                       {cred.featured && <Star className="w-3.5 h-3.5 text-amber-500" fill="currentColor" />}
                     </div>
-                    <h4 className="font-semibold text-brand-deep-navy truncate">{cred.title}</h4>
+                    <h4 className="font-semibold text-foreground truncate">{cred.title}</h4>
                     <div className="flex items-center gap-3 text-xs text-foreground-secondary mt-1">
                       {cred.year && <span>{cred.year}</span>}
                       {cred.event_name && <span>• {cred.event_name}</span>}

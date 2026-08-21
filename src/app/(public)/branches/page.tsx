@@ -60,9 +60,9 @@ export default function BranchesPage() {
             {branches.map((branch) => (
               <Card key={branch.slug} className="p-8">
                 <div className="w-14 h-14 rounded-full bg-brand-navy/5 flex items-center justify-center mb-5">
-                  <MapPin className="w-7 h-7 text-brand-navy" />
+                  <MapPin className="w-7 h-7 text-brand-navy dark:text-brand-green-light" />
                 </div>
-                <h2 className="font-heading font-bold text-2xl text-brand-deep-navy mb-2">
+                <h2 className="font-heading font-bold text-2xl text-foreground mb-2">
                   {branch.name}
                 </h2>
                 <p className="text-foreground-secondary mb-4">{branch.description}</p>

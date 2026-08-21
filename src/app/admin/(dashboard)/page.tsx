@@ -104,7 +104,7 @@ export default async function AdminDashboard() {
     <div className="space-y-8 animate-fade-in">
       {/* Welcome Banner */}
       <div>
-        <h2 className="text-3xl font-heading font-bold text-brand-deep-navy">
+        <h2 className="text-3xl font-heading font-bold text-foreground">
           Welcome to the Dashboard
         </h2>
         <p className="text-foreground-secondary mt-1 text-base">
@@ -116,14 +116,14 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Metric Card 1 */}
         <div className="bg-white rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
-          <div className="w-12 h-12 rounded-lg bg-brand-navy/10 flex items-center justify-center text-brand-navy">
+          <div className="w-12 h-12 rounded-lg bg-brand-navy/10 flex items-center justify-center text-brand-navy dark:text-brand-green-light">
             <Inbox className="w-6 h-6" />
           </div>
           <div>
             <span className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider block">
               Total Enquiries
             </span>
-            <span className="text-3xl font-bold text-brand-deep-navy block mt-0.5">
+            <span className="text-3xl font-bold text-foreground block mt-0.5">
               {totalEnquiries}
             </span>
           </div>
@@ -138,7 +138,7 @@ export default async function AdminDashboard() {
             <span className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider block">
               Programs
             </span>
-            <span className="text-3xl font-bold text-brand-deep-navy block mt-0.5">
+            <span className="text-3xl font-bold text-foreground block mt-0.5">
               {programCount || 0}
             </span>
           </div>
@@ -153,7 +153,7 @@ export default async function AdminDashboard() {
             <span className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider block">
               Branches
             </span>
-            <span className="text-3xl font-bold text-brand-deep-navy block mt-0.5">
+            <span className="text-3xl font-bold text-foreground block mt-0.5">
               {branchCount || 0}
             </span>
           </div>
@@ -168,7 +168,7 @@ export default async function AdminDashboard() {
             <span className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider block">
               Events & News
             </span>
-            <span className="text-3xl font-bold text-brand-deep-navy block mt-0.5">
+            <span className="text-3xl font-bold text-foreground block mt-0.5">
               {(eventCount || 0) + (achievementCount || 0)}
             </span>
           </div>
@@ -180,11 +180,11 @@ export default async function AdminDashboard() {
         {/* Left Column: Recent Enquiries */}
         <div className="lg:col-span-2 bg-white border border-border-light rounded-xl shadow-sm overflow-hidden flex flex-col">
           <div className="p-6 border-b border-border-light flex items-center justify-between">
-            <h3 className="font-heading font-bold text-lg text-brand-deep-navy flex items-center gap-2">
+            <h3 className="font-heading font-bold text-lg text-foreground flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-brand-green" />
               Latest Enquiries & Leads
             </h3>
-            <span className="text-xs bg-brand-navy/5 text-brand-navy font-semibold px-2.5 py-1 rounded-full border border-brand-navy/10">
+            <span className="text-xs bg-brand-navy/5 text-brand-navy dark:text-brand-green-light font-semibold px-2.5 py-1 rounded-full border border-brand-navy/10">
               Live Feed
             </span>
           </div>
@@ -202,7 +202,7 @@ export default async function AdminDashboard() {
                         {enq.date}
                       </span>
                     </div>
-                    <h4 className="font-semibold text-brand-deep-navy text-base leading-tight">
+                    <h4 className="font-semibold text-foreground text-base leading-tight">
                       {enq.title}
                     </h4>
                     <p className="text-sm text-foreground-secondary leading-normal">
@@ -211,7 +211,7 @@ export default async function AdminDashboard() {
                   </div>
                   <Link
                     href={enq.link}
-                    className="text-xs font-semibold text-brand-navy hover:text-brand-navy-light flex items-center gap-1 self-start sm:self-auto group transition"
+                    className="text-xs font-semibold text-brand-navy dark:text-brand-green-light hover:text-brand-navy-light flex items-center gap-1 self-start sm:self-auto group transition"
                   >
                     View Details
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -231,7 +231,7 @@ export default async function AdminDashboard() {
         {/* Right Column: Quick Stats & Resource Shortcuts */}
         <div className="bg-white border border-border-light rounded-xl shadow-sm p-6 flex flex-col justify-between">
           <div className="space-y-6">
-            <h3 className="font-heading font-bold text-lg text-brand-deep-navy border-b border-border-light pb-4">
+            <h3 className="font-heading font-bold text-lg text-foreground border-b border-border-light pb-4">
               Enquiry Breakdown
             </h3>
             
@@ -239,7 +239,7 @@ export default async function AdminDashboard() {
               <div>
                 <div className="flex justify-between text-sm font-medium mb-1">
                   <span className="text-foreground">Contact Form leads</span>
-                  <span className="text-brand-deep-navy font-bold">{contactCount || 0}</span>
+                  <span className="text-foreground font-bold">{contactCount || 0}</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
                   <div 
@@ -252,7 +252,7 @@ export default async function AdminDashboard() {
               <div>
                 <div className="flex justify-between text-sm font-medium mb-1">
                   <span className="text-foreground">Trial Class bookings</span>
-                  <span className="text-brand-deep-navy font-bold">{trialCount || 0}</span>
+                  <span className="text-foreground font-bold">{trialCount || 0}</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
                   <div 
@@ -265,7 +265,7 @@ export default async function AdminDashboard() {
               <div>
                 <div className="flex justify-between text-sm font-medium mb-1">
                   <span className="text-foreground">Workshop requests</span>
-                  <span className="text-brand-deep-navy font-bold">{workshopCount || 0}</span>
+                  <span className="text-foreground font-bold">{workshopCount || 0}</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
                   <div 

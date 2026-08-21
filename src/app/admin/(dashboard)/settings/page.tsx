@@ -81,7 +81,7 @@ export default function AdminSettingsPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+          <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <Settings className="w-6 h-6 text-brand-green" />
             Global Settings
           </h2>
@@ -110,7 +110,7 @@ export default function AdminSettingsPage() {
             const Icon = group.icon;
             return (
               <div key={group.title} className="bg-white rounded-xl border border-border-light shadow-sm p-6">
-                <h3 className="flex items-center gap-2 font-heading font-bold text-brand-deep-navy mb-5">
+                <h3 className="flex items-center gap-2 font-heading font-bold text-foreground mb-5">
                   <Icon className="w-5 h-5 text-brand-green" />
                   {group.title}
                 </h3>

@@ -82,7 +82,7 @@ export default function WorkshopEnquiriesPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+        <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
           <FileText className="w-6 h-6 text-brand-green" />
           Workshop Requests
         </h2>
@@ -135,10 +135,10 @@ export default function WorkshopEnquiriesPage() {
                         <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${statusInfo.bg} ${statusInfo.color}`}>{statusInfo.label}</span>
                         <span className="text-xs text-foreground-secondary">{new Date(enquiry.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                       </div>
-                      <h4 className="font-semibold text-brand-deep-navy truncate">{orgName}</h4>
+                      <h4 className="font-semibold text-foreground truncate">{orgName}</h4>
                       <p className="text-sm text-foreground-secondary truncate">Contact: {enquiry.contact_person}{enquiry.designation ? ` (${enquiry.designation})` : ''}</p>
                       <div className="flex items-center gap-3 text-xs text-foreground-secondary">
-                        {enquiry.workshop_type && <span className="font-medium text-brand-navy">{enquiry.workshop_type}</span>}
+                        {enquiry.workshop_type && <span className="font-medium text-brand-navy dark:text-brand-green-light">{enquiry.workshop_type}</span>}
                         {enquiry.participant_count && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{enquiry.participant_count} participants</span>}
                       </div>
                     </div>
@@ -155,7 +155,7 @@ export default function WorkshopEnquiriesPage() {
           {selectedEnquiry ? (
             <div className="space-y-5">
               <div>
-                <h3 className="font-heading font-bold text-lg text-brand-deep-navy">{selectedEnquiry.organization_name || selectedEnquiry.institution_name}</h3>
+                <h3 className="font-heading font-bold text-lg text-foreground">{selectedEnquiry.organization_name || selectedEnquiry.institution_name}</h3>
                 <p className="text-xs text-foreground-secondary mt-0.5">Submitted {new Date(selectedEnquiry.created_at).toLocaleString('en-IN')}</p>
               </div>
               <div className="space-y-2 text-sm">

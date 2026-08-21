@@ -62,7 +62,7 @@ export default function AdminEventsPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+          <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <Calendar className="w-6 h-6 text-brand-green" />
             Academy Events
           </h2>
@@ -108,7 +108,7 @@ export default function AdminEventsPage() {
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${statusInfo.color}`}>{statusInfo.label}</span>
                       {event.featured && <Star className="w-3.5 h-3.5 text-amber-500" fill="currentColor" />}
                     </div>
-                    <h4 className="font-semibold text-brand-deep-navy truncate">{event.title}</h4>
+                    <h4 className="font-semibold text-foreground truncate">{event.title}</h4>
                     <div className="flex items-center gap-3 text-xs text-foreground-secondary mt-1">
                       {eventDate && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>}
                       {event.category && <span className="bg-muted px-1.5 py-0.5 rounded">{event.category}</span>}

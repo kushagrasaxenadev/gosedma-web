@@ -74,7 +74,7 @@ export default function ContactEnquiriesPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h2 className="text-2xl font-heading font-bold text-brand-deep-navy flex items-center gap-2">
+        <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
           <MessageSquare className="w-6 h-6 text-brand-green" />
           Contact Messages
         </h2>
@@ -125,7 +125,7 @@ export default function ContactEnquiriesPage() {
                         <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${statusInfo.bg} ${statusInfo.color}`}>{statusInfo.label}</span>
                         <span className="text-xs text-foreground-secondary">{new Date(enquiry.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                       </div>
-                      <h4 className="font-semibold text-brand-deep-navy truncate">{enquiry.name}</h4>
+                      <h4 className="font-semibold text-foreground truncate">{enquiry.name}</h4>
                       {enquiry.subject && <p className="text-sm text-foreground-secondary truncate">{enquiry.subject}</p>}
                       <div className="flex items-center gap-3 text-xs text-foreground-secondary">
                         <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{enquiry.phone}</span>
@@ -145,7 +145,7 @@ export default function ContactEnquiriesPage() {
           {selectedEnquiry ? (
             <div className="space-y-5">
               <div>
-                <h3 className="font-heading font-bold text-lg text-brand-deep-navy">{selectedEnquiry.name}</h3>
+                <h3 className="font-heading font-bold text-lg text-foreground">{selectedEnquiry.name}</h3>
                 <p className="text-xs text-foreground-secondary mt-0.5">Submitted {new Date(selectedEnquiry.created_at).toLocaleString('en-IN')}</p>
               </div>
               <div className="space-y-2 text-sm">
