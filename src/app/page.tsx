@@ -118,7 +118,7 @@ function TrustBar() {
             className="card p-5 text-center hover:border-brand-green/30"
           >
             <stat.icon className="w-7 h-7 mx-auto mb-2 text-brand-green" />
-            <p className="text-lg font-heading font-bold text-brand-deep-navy">
+            <p className="text-lg font-heading font-bold text-foreground">
               {stat.value}
             </p>
             <p className="text-xs text-muted-foreground">{stat.label}</p>
