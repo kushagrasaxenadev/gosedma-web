@@ -56,6 +56,30 @@
 }
 
 /* ============================================
+   Dark Mode Overrides
+   ============================================ */
+.dark {
+  --background: #0C1929;
+  --surface: #142649;
+  --surface-elevated: #1A3058;
+  --muted: #1A2D4A;
+  --muted-foreground: #8B9DB5;
+
+  --foreground: #E8EDF3;
+  --foreground-secondary: #A3B5CC;
+
+  --border: #253E63;
+  --border-light: #1E3355;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  color-scheme: dark;
+}
+
+/* ============================================
    Tailwind v4 Theme Tokens
    ============================================ */
 @theme inline {
@@ -135,7 +159,7 @@ html {
     font-family: var(--font-heading);
     font-weight: 700;
     line-height: 1.15;
-    color: var(--brand-deep-navy);
+    color: var(--foreground);
     letter-spacing: -0.01em;
     text-wrap: balance;
   }

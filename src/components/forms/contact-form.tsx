@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { contactEnquirySchema } from '@/lib/validations/enquiry';
@@ -60,7 +60,7 @@ export function ContactForm() {
 
   if (status === 'success') {
     return (
-      <div className="card p-8 text-center max-w-lg mx-auto bg-white">
+      <div className="card p-8 text-center max-w-lg mx-auto bg-surface">
         <div className="w-16 h-16 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg className="w-8 h-8 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
@@ -76,7 +76,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-xl mx-auto card p-6 md:p-8 bg-white">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-xl mx-auto card p-6 md:p-8 bg-surface">
       <h3 className="font-heading font-bold text-2xl text-brand-deep-navy border-b border-border-light pb-3">
         Send Us a Message
       </h3>
@@ -125,7 +125,7 @@ export function ContactForm() {
 
       {/* Cloudflare Turnstile */}
       <div className="pt-2">
-        <Turnstile onVerify={(token) => setValue('turnstile_token', token, { shouldValidate: true })} />
+        <Turnstile onVerify={useCallback((token: string) => setValue('turnstile_token', token, { shouldValidate: true }), [setValue])} />
         {errors.turnstile_token && (
           <p className="form-error">{errors.turnstile_token.message?.toString()}</p>
         )}

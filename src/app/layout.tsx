@@ -82,9 +82,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${barlowCondensed.variable}`}>
+    <html lang="en" className={`${inter.variable} ${barlowCondensed.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('gosedma-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})();`,
+          }}
+        />
       </head>
       <body className="min-h-screen flex flex-col">
         <a href="#main-content" className="skip-link">

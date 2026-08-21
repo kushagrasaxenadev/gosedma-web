@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 interface TurnstileProps {
   onVerify: (token: string) => void;
@@ -28,13 +28,24 @@ declare global {
 export function Turnstile({ onVerify, className }: TurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
+  // Store onVerify in a ref to avoid re-triggering useEffect on every render
+  const onVerifyRef = useRef(onVerify);
+  const hasCalledFallback = useRef(false);
+
+  // Keep the ref current without triggering effects
+  useEffect(() => {
+    onVerifyRef.current = onVerify;
+  }, [onVerify]);
 
   useEffect(() => {
     const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
     if (!siteKey) {
-      // Local fallback token if Turnstile key is not set
-      onVerify('local-dev-token');
+      // Local/demo fallback token — call only once
+      if (!hasCalledFallback.current) {
+        hasCalledFallback.current = true;
+        onVerifyRef.current('local-dev-token');
+      }
       return;
     }
 
@@ -44,13 +55,13 @@ export function Turnstile({ onVerify, className }: TurnstileProps) {
         widgetIdRef.current = window.turnstile.render(containerRef.current, {
           sitekey: siteKey,
           callback: (token: string) => {
-            onVerify(token);
+            onVerifyRef.current(token);
           },
           'error-callback': () => {
             console.error('Turnstile error');
           },
           'expired-callback': () => {
-            onVerify('');
+            onVerifyRef.current('');
           },
         });
       }
@@ -76,10 +87,9 @@ export function Turnstile({ onVerify, className }: TurnstileProps) {
     }
 
     return () => {
-      // Clean up script listener if any
       script?.removeEventListener('load', initializeTurnstile);
     };
-  }, [onVerify]);
+  }, []); // Empty deps — runs once on mount
 
   return <div ref={containerRef} className={className} />;
 }
