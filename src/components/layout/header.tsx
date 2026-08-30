@@ -288,20 +288,6 @@ export function Header() {
           </div>
 
           <div className="p-5 space-y-1">
-            {/* Home link (explicitly added for mobile) */}
-            <Link
-              href="/"
-              className={cn(
-                'block px-3 py-3 text-base font-medium rounded-lg transition-colors',
-                isActive('/')
-                  ? 'text-brand-navy dark:text-brand-green bg-brand-navy/5 dark:bg-brand-green/10'
-                  : 'text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/5'
-              )}
-              onClick={() => setMobileOpen(false)}
-            >
-              Home
-            </Link>
-
             {NAV_LINKS.map((link) => (
               <div key={link.href}>
                 {'children' in link && link.children ? (
