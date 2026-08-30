@@ -230,14 +230,16 @@ export function Header() {
             {/* Mobile: dark mode + hamburger */}
             <div className="lg:hidden flex items-center gap-1">
               <button
+                type="button"
                 onClick={toggleDarkMode}
-                className="p-2 rounded-lg text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/10 transition-colors"
+                className="p-2.5 rounded-lg text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
                 aria-label="Toggle dark mode"
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               <button
-                className="p-2 -mr-2 rounded-lg text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/10 transition-colors"
+                type="button"
+                className="p-2.5 -mr-1 rounded-lg text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-expanded={mobileOpen}
                 aria-controls="mobile-menu"
@@ -250,79 +252,86 @@ export function Header() {
         </nav>
       </div>
 
-      {/* Mobile Navigation — Full screen overlay */}
+      {/* Mobile Navigation — Full screen overlay with top z-index and explicit pointer-events-auto */}
       <div
         id="mobile-menu"
         className={cn(
-          'lg:hidden fixed inset-0 z-40 transition-all duration-300',
-          mobileOpen ? 'visible opacity-100' : 'invisible opacity-0 pointer-events-none'
+          'lg:hidden fixed inset-0 z-[70] transition-all duration-300',
+          mobileOpen ? 'visible opacity-100 pointer-events-auto' : 'invisible opacity-0 pointer-events-none'
         )}
       >
-        {/* Backdrop */}
+        {/* Backdrop — captures clicks and closes menu */}
         <div
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer pointer-events-auto"
           onClick={() => setMobileOpen(false)}
           aria-hidden="true"
         />
 
-        {/* Menu panel — full width, scrollable */}
+        {/* Menu panel — full height, scrollable, touch-friendly, non-selectable text */}
         <div
           className={cn(
-            'absolute top-0 right-0 h-full w-full max-w-sm bg-white dark:bg-brand-deep-navy shadow-xl overflow-y-auto transition-transform duration-300 border-l border-border-light dark:border-white/10',
+            'absolute top-0 right-0 h-full w-full max-w-xs sm:max-w-sm bg-surface dark:bg-brand-deep-navy shadow-2xl overflow-y-auto transition-transform duration-300 border-l border-border-light dark:border-white/10 z-10 pointer-events-auto select-none touch-manipulation flex flex-col',
             mobileOpen ? 'translate-x-0' : 'translate-x-full'
           )}
         >
           {/* Mobile menu header */}
-          <div className="flex items-center justify-between p-4 border-b border-border-light dark:border-white/10">
-            <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
+          <div className="flex items-center justify-between p-4 border-b border-border-light dark:border-white/10 shrink-0 bg-surface dark:bg-brand-deep-navy sticky top-0 z-20">
+            <Link
+              href="/"
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => setMobileOpen(false)}
+            >
               <Image src="/images/logo-circular.png" alt="GOSEDMA" width={36} height={36} className="w-9 h-9" />
               <span className="font-heading font-bold text-lg text-foreground dark:text-white">GOSEDMA</span>
             </Link>
             <button
+              type="button"
               onClick={() => setMobileOpen(false)}
-              className="p-2 rounded-lg text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/10 transition-colors"
+              className="p-2.5 rounded-lg text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/10 active:scale-90 transition-all cursor-pointer"
               aria-label="Close menu"
             >
-              <X className="w-5 h-5" />
+              <X className="w-6 h-6" />
             </button>
           </div>
 
-          <div className="p-5 space-y-1">
+          <div className="p-5 space-y-1 flex-1">
             {NAV_LINKS.map((link) => (
               <div key={link.href}>
                 {'children' in link && link.children ? (
                   <>
                     <button
+                      type="button"
                       className={cn(
-                        'flex items-center justify-between w-full px-3 py-3 text-base font-medium rounded-lg transition-colors',
+                        'flex items-center justify-between w-full px-3 py-3 text-base font-semibold rounded-lg transition-colors cursor-pointer select-none text-left',
                         isActive(link.href)
                           ? 'text-brand-navy dark:text-brand-green bg-brand-navy/5 dark:bg-brand-green/10'
-                          : 'text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/5'
+                          : 'text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/5 active:bg-muted/80'
                       )}
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setOpenDropdown(
                           openDropdown === link.label ? null : link.label
-                        )
-                      }
+                        );
+                      }}
                       aria-expanded={openDropdown === link.label}
                     >
-                      {link.label}
+                      <span>{link.label}</span>
                       <ChevronDown
                         className={cn(
-                          'w-4 h-4 transition-transform',
+                          'w-4 h-4 transition-transform duration-200',
                           openDropdown === link.label && 'rotate-180'
                         )}
                       />
                     </button>
 
                     {openDropdown === link.label && (
-                      <div className="ml-4 space-y-0.5 border-l-2 border-brand-green/30 pl-3 mb-2">
+                      <div className="ml-3 space-y-1 border-l-2 border-brand-green/40 pl-3 my-1">
                         {link.children.map((child) => (
                           <Link
                             key={child.href}
                             href={child.href}
                             className={cn(
-                              'block px-3 py-2 text-sm rounded-lg transition-colors',
+                              'block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors cursor-pointer select-none',
                               'featured' in child && child.featured
                                 ? 'text-brand-green font-semibold hover:bg-brand-green/5'
                                 : 'text-foreground-secondary dark:text-white/70 hover:text-brand-navy dark:hover:text-white hover:bg-muted dark:hover:bg-white/5',
@@ -340,10 +349,10 @@ export function Header() {
                   <Link
                     href={link.href}
                     className={cn(
-                      'block px-3 py-3 text-base font-medium rounded-lg transition-colors',
+                      'block px-3 py-3 text-base font-semibold rounded-lg transition-colors cursor-pointer select-none',
                       isActive(link.href)
                         ? 'text-brand-navy dark:text-brand-green bg-brand-navy/5 dark:bg-brand-green/10'
-                        : 'text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/5'
+                        : 'text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/5 active:bg-muted/80'
                     )}
                     onClick={() => setMobileOpen(false)}
                   >
@@ -354,14 +363,14 @@ export function Header() {
             ))}
 
             {/* Mobile CTAs */}
-            <div className="pt-4 mt-4 border-t border-border-light dark:border-white/10 space-y-3">
-              <Link href="/trial" className="block" onClick={() => setMobileOpen(false)}>
-                <Button fullWidth variant="secondary" size="lg">
+            <div className="pt-5 mt-4 border-t border-border-light dark:border-white/10 space-y-3">
+              <Link href="/trial" className="block w-full cursor-pointer" onClick={() => setMobileOpen(false)}>
+                <Button fullWidth variant="secondary" size="lg" className="w-full justify-center shadow-md">
                   Book a Trial Class
                 </Button>
               </Link>
-              <Link href="/workshops/schools" className="block" onClick={() => setMobileOpen(false)}>
-                <Button fullWidth variant="outline" size="lg">
+              <Link href="/workshops/schools" className="block w-full cursor-pointer" onClick={() => setMobileOpen(false)}>
+                <Button fullWidth variant="outline" size="lg" className="w-full justify-center">
                   School Workshops
                 </Button>
               </Link>
@@ -371,7 +380,7 @@ export function Header() {
             <div className="pt-4 mt-4 border-t border-border-light dark:border-white/10 space-y-2">
               <a
                 href={`tel:${SITE_CONFIG.phone}`}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted dark:hover:bg-white/5 transition-colors"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted dark:hover:bg-white/5 transition-colors cursor-pointer"
               >
                 <Phone className="w-5 h-5 text-brand-navy dark:text-brand-green" />
                 <span className="text-sm font-medium text-foreground dark:text-white">{SITE_CONFIG.phone}</span>
@@ -380,7 +389,7 @@ export function Header() {
                 href={`https://wa.me/${SITE_CONFIG.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted dark:hover:bg-white/5 transition-colors"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted dark:hover:bg-white/5 transition-colors cursor-pointer"
               >
                 <MessageCircle className="w-5 h-5 text-[#25D366]" />
                 <span className="text-sm font-medium text-foreground dark:text-white">WhatsApp Us</span>
