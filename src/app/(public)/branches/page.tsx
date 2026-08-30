@@ -59,8 +59,8 @@ export default function BranchesPage() {
           <div className="grid sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {branches.map((branch) => (
               <Card key={branch.slug} className="p-8">
-                <div className="w-14 h-14 rounded-full bg-brand-navy/5 flex items-center justify-center mb-5">
-                  <MapPin className="w-7 h-7 text-brand-navy dark:text-brand-green-light" />
+                <div className="w-14 h-14 rounded-full bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-5">
+                  <MapPin className="w-7 h-7 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
                 </div>
                 <h2 className="font-heading font-bold text-2xl text-foreground mb-2">
                   {branch.name}
@@ -72,7 +72,7 @@ export default function BranchesPage() {
                     <MapPin className="w-4 h-4 text-brand-green shrink-0" />
                     {branch.address}
                   </div>
-                  <a href={`tel:${branch.phone}`} className="flex items-center gap-2 text-sm text-foreground-secondary hover:text-brand-navy transition-colors">
+                  <a href={`tel:${branch.phone}`} className="flex items-center gap-2 text-sm text-foreground-secondary hover:text-brand-navy dark:text-brand-green transition-colors">
                     <Phone className="w-4 h-4 text-brand-green shrink-0" />
                     {branch.phone}
                   </a>

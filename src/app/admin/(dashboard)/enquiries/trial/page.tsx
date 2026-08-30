@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { 
-  UserCheck, Search, Filter, ChevronDown, Clock, 
+  UserCheck, Search, Download, Clock, 
   Phone, Mail, MapPin, MessageSquare, Calendar,
-  ArrowUpRight, MoreHorizontal
+  ArrowUpRight
 } from 'lucide-react';
 
 interface TrialEnquiry {
@@ -114,6 +114,31 @@ export default function TrialEnquiriesPage() {
     lost: enquiries.filter(e => e.status === 'lost').length,
   };
 
+  const exportCSV = () => {
+    const cols = ['Name', 'Phone', 'WhatsApp', 'Email', 'Program', 'Age Group', 'Experience', 'Status', 'Date', 'Notes'];
+    const rows = filtered.map(e => [
+      e.student_name || e.name || '',
+      e.phone || '',
+      e.whatsapp || '',
+      e.email || '',
+      e.selected_program || e.interested_program || '',
+      e.age_group || '',
+      e.experience_level || '',
+      e.status || '',
+      e.created_at ? new Date(e.created_at).toLocaleDateString('en-IN') : '',
+      (e.admin_notes || '').replace(/,/g, ';'),
+    ]);
+    const csv = [cols, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trial-enquiries-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Page Header */}
@@ -127,6 +152,13 @@ export default function TrialEnquiriesPage() {
             Manage free trial class enquiries and convert leads.
           </p>
         </div>
+        <button
+          onClick={exportCSV}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg border border-border-light dark:border-border bg-surface dark:bg-surface hover:bg-muted dark:hover:bg-muted transition-colors text-foreground"
+        >
+          <Download className="w-4 h-4 text-brand-green" />
+          Export CSV ({filtered.length})
+        </button>
       </div>
 
       {/* Status Tabs */}
@@ -137,13 +169,13 @@ export default function TrialEnquiriesPage() {
             onClick={() => setStatusFilter(status)}
             className={`px-4 py-2 text-sm font-semibold rounded-lg border transition-all ${
               statusFilter === status
-                ? 'bg-brand-navy text-white border-brand-navy shadow-sm'
-                : 'bg-white text-foreground-secondary border-border-light hover:border-brand-navy/30'
+                ? 'bg-brand-navy dark:bg-brand-green text-white border-transparent shadow-sm'
+                : 'bg-surface dark:bg-surface text-foreground-secondary border-border-light dark:border-border hover:border-brand-navy/30 dark:hover:border-brand-green/40'
             }`}
           >
             {status === 'all' ? 'All' : STATUS_CONFIG[status]?.label || status}
             <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-              statusFilter === status ? 'bg-white/20' : 'bg-muted'
+              statusFilter === status ? 'bg-surface/20' : 'bg-muted'
             }`}>
               {counts[status]}
             </span>
@@ -159,14 +191,14 @@ export default function TrialEnquiriesPage() {
           placeholder="Search by name, phone or email..."
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-border-light rounded-lg text-sm text-foreground placeholder:text-foreground-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy transition"
+          className="form-input pl-10 py-2.5 text-sm"
         />
       </div>
 
       {/* Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Enquiry List */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-border-light shadow-sm overflow-hidden">
+        <div className="lg:col-span-2 bg-surface rounded-xl border border-border-light dark:border-border shadow-sm overflow-hidden">
           {loading ? (
             <div className="p-12 text-center text-foreground-secondary">
               <div className="animate-spin w-8 h-8 border-2 border-brand-navy border-t-transparent rounded-full mx-auto mb-3" />
@@ -193,7 +225,7 @@ export default function TrialEnquiriesPage() {
                       setAdminNote(enquiry.admin_notes || '');
                     }}
                     className={`w-full text-left p-5 hover:bg-muted/30 transition flex items-start justify-between gap-4 ${
-                      isSelected ? 'bg-brand-navy/5 border-l-3 border-l-brand-navy' : ''
+                      isSelected ? 'bg-brand-navy/5 dark:bg-brand-green/10 border-l-3 border-l-brand-navy' : ''
                     }`}
                   >
                     <div className="space-y-1.5 min-w-0 flex-1">
@@ -225,7 +257,7 @@ export default function TrialEnquiriesPage() {
         </div>
 
         {/* Detail Panel */}
-        <div className="bg-white rounded-xl border border-border-light shadow-sm p-6 sticky top-6 h-fit">
+        <div className="bg-surface rounded-xl border border-border-light shadow-sm p-6 sticky top-6 h-fit">
           {selectedEnquiry ? (
             <div className="space-y-5">
               <div>
@@ -291,7 +323,7 @@ export default function TrialEnquiriesPage() {
                       className={`text-xs font-semibold py-2 px-3 rounded-lg border transition ${
                         selectedEnquiry.status === key
                           ? `${config.bg} ${config.color} ring-2 ring-offset-1 ring-current/20`
-                          : 'bg-white border-border-light text-foreground-secondary hover:border-brand-navy/20'
+                          : 'bg-surface border-border-light text-foreground-secondary hover:border-brand-navy/20'
                       }`}
                     >
                       {config.label}

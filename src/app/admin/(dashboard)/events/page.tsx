@@ -20,7 +20,7 @@ interface EventItem {
 }
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
-  draft: { label: 'Draft', color: 'bg-gray-50 text-gray-500 border-gray-200' },
+  draft: { label: 'Draft', color: 'bg-gray-50 text-muted-foreground border-border-light' },
   published: { label: 'Published', color: 'bg-green-50 text-green-700 border-green-200' },
   archived: { label: 'Archived', color: 'bg-amber-50 text-amber-700 border-amber-200' },
 };
@@ -76,7 +76,7 @@ export default function AdminEventsPage() {
       <div className="flex gap-2">
         {['all', 'draft', 'published', 'archived'].map(s => (
           <button key={s} onClick={() => setStatusFilter(s)}
-            className={`px-4 py-2 text-sm font-semibold rounded-lg border transition-all ${statusFilter === s ? 'bg-brand-navy text-white border-brand-navy' : 'bg-white text-foreground-secondary border-border-light hover:border-brand-navy/30'}`}>
+            className={`px-4 py-2 text-sm font-semibold rounded-lg border transition-all ${statusFilter === s ? 'bg-brand-navy text-white border-brand-navy' : 'bg-surface text-foreground-secondary border-border-light hover:border-brand-navy/30'}`}>
             {s === 'all' ? 'All' : STATUS_MAP[s]?.label || s}
           </button>
         ))}
@@ -123,7 +123,7 @@ export default function AdminEventsPage() {
                     ) : (
                       <button onClick={() => updateStatus(event.id, 'draft')} className="p-2 rounded-lg text-foreground-secondary hover:bg-muted transition"><EyeOff className="w-4 h-4" /></button>
                     )}
-                    <button className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 transition"><Edit3 className="w-4 h-4" /></button>
+                    <button className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 dark:bg-brand-green/10 transition"><Edit3 className="w-4 h-4" /></button>
                     <button onClick={() => deleteEvent(event.id, event.title)} className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>

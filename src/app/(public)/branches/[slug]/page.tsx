@@ -122,7 +122,7 @@ export default async function BranchDetailPage({ params }: PageProps) {
                 <h3 className="font-heading font-bold text-xl text-foreground mb-5">Get in Touch</h3>
                 <div className="space-y-4 mb-6">
                   <a href={`tel:${branch.phone}`} className="flex items-center gap-3 p-3 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
-                    <Phone className="w-5 h-5 text-brand-navy dark:text-brand-green-light" />
+                    <Phone className="w-5 h-5 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
                     <div>
                       <p className="text-xs text-muted-foreground">Call Us</p>
                       <p className="text-sm font-semibold text-foreground">{branch.phone}</p>

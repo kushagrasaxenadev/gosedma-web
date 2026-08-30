@@ -13,7 +13,7 @@ export default function NewsDetailPage() {
   return (
     <section className="section-padding">
       <div className="container-narrow text-center py-12">
-        <Newspaper className="w-16 h-16 text-brand-navy dark:text-brand-green-light/20 mx-auto mb-4" />
+        <Newspaper className="w-16 h-16 text-brand-navy dark:text-brand-green dark:text-brand-green-light/20 mx-auto mb-4" />
         <Badge variant="navy" className="mb-4">News</Badge>
         <h1 className="font-heading font-extrabold text-3xl text-foreground mb-4">
           News Article Coming Soon

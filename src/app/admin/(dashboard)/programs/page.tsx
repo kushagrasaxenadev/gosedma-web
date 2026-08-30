@@ -71,10 +71,10 @@ export default function AdminProgramsPage() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-secondary" />
         <input type="text" placeholder="Search programs..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-border-light rounded-lg text-sm text-foreground placeholder:text-foreground-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy transition" />
+          className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border-light rounded-lg text-sm text-foreground placeholder:text-foreground-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy transition" />
       </div>
 
-      <div className="bg-white rounded-xl border border-border-light shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border-light shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-foreground-secondary">
             <div className="animate-spin w-8 h-8 border-2 border-brand-navy border-t-transparent rounded-full mx-auto mb-3" />
@@ -126,13 +126,13 @@ export default function AdminProgramsPage() {
                     </td>
                     <td className="px-5 py-4 text-center">
                       <button onClick={() => togglePublished(program.id, program.published)}
-                        className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border transition ${program.published ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}>
+                        className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border transition ${program.published ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-muted-foreground border-border-light'}`}>
                         {program.published ? <><Eye className="w-3 h-3" /> Live</> : <><EyeOff className="w-3 h-3" /> Draft</>}
                       </button>
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <button className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 transition" title="Edit">
+                        <button className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 dark:bg-brand-green/10 transition" title="Edit">
                           <Edit3 className="w-4 h-4" />
                         </button>
                         <button onClick={() => deleteProgram(program.id, program.title)} className="p-2 rounded-lg text-foreground-secondary hover:text-red-600 hover:bg-red-50 transition" title="Delete">

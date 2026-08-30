@@ -100,7 +100,7 @@ export default function AdminSettingsPage() {
       </div>
 
       {loading ? (
-        <div className="bg-white rounded-xl border border-border-light p-12 text-center text-foreground-secondary">
+        <div className="bg-surface rounded-xl border border-border-light p-12 text-center text-foreground-secondary">
           <div className="animate-spin w-8 h-8 border-2 border-brand-navy border-t-transparent rounded-full mx-auto mb-3" />
           <p className="text-sm font-medium">Loading settings...</p>
         </div>
@@ -109,7 +109,7 @@ export default function AdminSettingsPage() {
           {SETTING_GROUPS.map(group => {
             const Icon = group.icon;
             return (
-              <div key={group.title} className="bg-white rounded-xl border border-border-light shadow-sm p-6">
+              <div key={group.title} className="bg-surface rounded-xl border border-border-light shadow-sm p-6">
                 <h3 className="flex items-center gap-2 font-heading font-bold text-foreground mb-5">
                   <Icon className="w-5 h-5 text-brand-green" />
                   {group.title}
@@ -125,7 +125,7 @@ export default function AdminSettingsPage() {
                         value={settings[key] || ''}
                         onChange={e => handleChange(key, e.target.value)}
                         placeholder={`Enter ${formatLabel(key).toLowerCase()}...`}
-                        className="w-full px-4 py-2.5 bg-white border border-border-light rounded-lg text-sm text-foreground placeholder:text-foreground-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy transition"
+                        className="w-full px-4 py-2.5 bg-surface border border-border-light rounded-lg text-sm text-foreground placeholder:text-foreground-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy transition"
                       />
                     </div>
                   ))}

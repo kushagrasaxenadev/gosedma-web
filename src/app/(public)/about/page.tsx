@@ -111,8 +111,8 @@ export default function AboutPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value) => (
               <div key={value.title} className="card p-6 text-center">
-                <div className="w-14 h-14 mx-auto rounded-xl bg-brand-navy/5 flex items-center justify-center mb-4">
-                  <value.icon className="w-7 h-7 text-brand-navy dark:text-brand-green-light" />
+                <div className="w-14 h-14 mx-auto rounded-xl bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-4">
+                  <value.icon className="w-7 h-7 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
                 </div>
                 <h3 className="font-heading font-bold text-lg text-foreground mb-2">
                   {value.title}

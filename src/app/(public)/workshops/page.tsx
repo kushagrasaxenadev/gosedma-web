@@ -58,8 +58,8 @@ export default function WorkshopsPage() {
 
             <Link href="/workshops/corporate" className="group">
               <Card className="h-full p-8 text-center group-hover:border-brand-navy/30">
-                <div className="w-16 h-16 mx-auto rounded-full bg-brand-navy/5 flex items-center justify-center mb-5 group-hover:bg-brand-navy/10 transition-colors">
-                  <Building2 className="w-8 h-8 text-brand-navy dark:text-brand-green-light" />
+                <div className="w-16 h-16 mx-auto rounded-full bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-5 group-hover:bg-brand-navy/10 dark:bg-brand-green/10 transition-colors">
+                  <Building2 className="w-8 h-8 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
                 </div>
                 <Badge variant="navy" className="mb-3">Professional</Badge>
                 <h2 className="font-heading font-bold text-2xl text-foreground mb-3">

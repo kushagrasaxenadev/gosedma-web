@@ -70,13 +70,13 @@ export default function AdminVideosPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {loading ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border border-border-light overflow-hidden animate-pulse">
+            <div key={i} className="bg-surface rounded-xl border border-border-light overflow-hidden animate-pulse">
               <div className="aspect-video bg-muted" />
               <div className="p-4"><div className="h-5 bg-muted rounded w-2/3 mb-2" /><div className="h-4 bg-muted rounded w-1/2" /></div>
             </div>
           ))
         ) : videos.length === 0 ? (
-          <div className="col-span-full bg-white rounded-xl border border-border-light p-12 text-center text-foreground-secondary">
+          <div className="col-span-full bg-surface rounded-xl border border-border-light p-12 text-center text-foreground-secondary">
             <Video className="w-10 h-10 mx-auto mb-3 text-foreground-secondary/30" />
             <p className="font-medium">No videos yet.</p>
             <p className="text-sm mt-1">Add YouTube videos to showcase training sessions and events.</p>
@@ -86,7 +86,7 @@ export default function AdminVideosPage() {
             const ytId = getYouTubeId(video.youtube_url);
             const thumbUrl = video.thumbnail_url || (ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null);
             return (
-              <div key={video.id} className="bg-white rounded-xl border border-border-light shadow-sm overflow-hidden hover:shadow-md transition group">
+              <div key={video.id} className="bg-surface rounded-xl border border-border-light shadow-sm overflow-hidden hover:shadow-md transition group">
                 <div className="aspect-video bg-black relative">
                   {thumbUrl ? (
                     <img src={thumbUrl} alt={video.title} className="w-full h-full object-cover" />
@@ -112,10 +112,10 @@ export default function AdminVideosPage() {
                     <button onClick={() => toggleFeatured(video.id, video.featured)} className={`p-2 rounded-lg transition ${video.featured ? 'text-amber-500 bg-amber-50' : 'text-foreground-secondary/30 hover:text-amber-500'}`}>
                       <Star className="w-3.5 h-3.5" fill={video.featured ? 'currentColor' : 'none'} />
                     </button>
-                    <button onClick={() => togglePublished(video.id, video.published)} className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 transition">
+                    <button onClick={() => togglePublished(video.id, video.published)} className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 dark:bg-brand-green/10 transition">
                       {video.published ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
-                    <a href={video.youtube_url} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 transition">
+                    <a href={video.youtube_url} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 dark:bg-brand-green/10 transition">
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex-1" />

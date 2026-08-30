@@ -13,7 +13,7 @@ export default function EventDetailPage() {
   return (
     <section className="section-padding">
       <div className="container-narrow text-center py-12">
-        <Calendar className="w-16 h-16 text-brand-navy dark:text-brand-green-light/20 mx-auto mb-4" />
+        <Calendar className="w-16 h-16 text-brand-navy dark:text-brand-green dark:text-brand-green-light/20 mx-auto mb-4" />
         <Badge variant="navy" className="mb-4">Events</Badge>
         <h1 className="font-heading font-extrabold text-3xl text-foreground mb-4">
           Event Details Coming Soon

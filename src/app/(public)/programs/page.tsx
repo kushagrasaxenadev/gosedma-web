@@ -168,8 +168,8 @@ export default function ProgramsPage() {
               <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
                 <Card className="h-full p-6 group-hover:border-brand-green/30">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-brand-navy/5 flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
-                      <program.icon className="w-6 h-6 text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
+                    <div className="w-12 h-12 rounded-xl bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
+                      <program.icon className="w-6 h-6 text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
                     </div>
                     <Badge variant="muted">{program.category}</Badge>
                   </div>
@@ -179,7 +179,7 @@ export default function ProgramsPage() {
                   <p className="text-sm text-foreground-secondary leading-relaxed mb-4">
                     {program.description}
                   </p>
-                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors">
                     Learn More
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -205,7 +205,7 @@ export default function ProgramsPage() {
               <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
                 <Card className="h-full p-6 group-hover:border-brand-navy/30">
                   <div className="flex items-center gap-3 mb-3">
-                    <program.icon className="w-5 h-5 text-brand-navy dark:text-brand-green-light" />
+                    <program.icon className="w-5 h-5 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
                     <Badge variant="muted">{program.category}</Badge>
                   </div>
                   <h3 className="font-heading font-bold text-lg text-foreground mb-2">
@@ -214,7 +214,7 @@ export default function ProgramsPage() {
                   <p className="text-sm text-foreground-secondary leading-relaxed mb-3">
                     {program.description}
                   </p>
-                  <span className="text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
+                  <span className="text-sm font-semibold text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors">
                     Learn More →
                   </span>
                 </Card>

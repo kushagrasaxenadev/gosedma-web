@@ -34,7 +34,7 @@ export default function AchievementsPage() {
       <section className="section-padding">
         <div className="container-narrow text-center">
           <div className="card p-12">
-            <Trophy className="w-12 h-12 text-brand-navy dark:text-brand-green-light/20 mx-auto mb-4" />
+            <Trophy className="w-12 h-12 text-brand-navy dark:text-brand-green dark:text-brand-green-light/20 mx-auto mb-4" />
             <h2 className="font-heading font-bold text-2xl text-foreground mb-3">
               Achievements Coming Soon
             </h2>

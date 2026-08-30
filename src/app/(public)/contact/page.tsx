@@ -88,14 +88,14 @@ export default function ContactPage() {
                   rel={method.external ? 'noopener noreferrer' : undefined}
                   className="card p-5 flex items-center gap-4 hover:border-brand-green/30"
                 >
-                  <div className="w-12 h-12 rounded-full bg-brand-navy/5 flex items-center justify-center shrink-0 group-hover:bg-brand-green/10 transition-colors">
-                    <method.icon className="w-6 h-6 text-brand-navy dark:text-brand-green-light" />
+                  <div className="w-12 h-12 rounded-full bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center shrink-0 group-hover:bg-brand-green/10 transition-colors">
+                    <method.icon className="w-6 h-6 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
                   </div>
                   <div>
                     <h3 className="font-heading font-bold text-lg text-foreground mb-0.5">
                       {method.title}
                     </h3>
-                    <p className="text-brand-navy dark:text-brand-green-light text-sm font-semibold mb-0.5">{method.value}</p>
+                    <p className="text-brand-navy dark:text-brand-green dark:text-brand-green-light text-sm font-semibold mb-0.5">{method.value}</p>
                     <p className="text-xs text-muted-foreground">{method.description}</p>
                   </div>
                 </a>
@@ -137,7 +137,7 @@ export default function ContactPage() {
 
           {/* Hours */}
           <div className="max-w-md mx-auto card p-6 text-center">
-            <Clock className="w-8 h-8 text-brand-navy dark:text-brand-green-light mx-auto mb-3" />
+            <Clock className="w-8 h-8 text-brand-navy dark:text-brand-green dark:text-brand-green-light mx-auto mb-3" />
             <h3 className="font-heading font-bold text-lg text-foreground mb-2">
               Training Hours
             </h3>

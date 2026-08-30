@@ -3,6 +3,8 @@ import { Inter, Barlow_Condensed } from 'next/font/google';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { WhatsAppFloat } from '@/components/layout/whatsapp-float';
+import { BackToTop } from '@/components/ui/back-to-top';
+import { CookieNotice } from '@/components/ui/cookie-notice';
 import { SITE_CONFIG } from '@/lib/constants';
 import './globals.css';
 
@@ -101,6 +103,8 @@ export default function RootLayout({
         </main>
         <Footer />
         <WhatsAppFloat />
+        <BackToTop />
+        <CookieNotice />
       </body>
     </html>
   );

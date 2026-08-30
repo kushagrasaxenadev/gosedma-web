@@ -142,7 +142,7 @@ function LoginFormFallback() {
 export default function AdminLoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-hero pattern-overlay p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-border-light overflow-hidden animate-scale-in">
+      <div className="w-full max-w-md bg-surface rounded-2xl shadow-xl border border-border-light overflow-hidden animate-scale-in">
         <div className="p-6 md:p-8 bg-brand-deep-navy text-white text-center relative">
           <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-brand-green to-brand-green-light" />
           <h2 className="font-heading font-bold text-3xl tracking-wide uppercase text-white">

@@ -115,8 +115,8 @@ export default async function AdminDashboard() {
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Metric Card 1 */}
-        <div className="bg-white rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
-          <div className="w-12 h-12 rounded-lg bg-brand-navy/10 flex items-center justify-center text-brand-navy dark:text-brand-green-light">
+        <div className="bg-surface rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
+          <div className="w-12 h-12 rounded-lg bg-brand-navy/10 dark:bg-brand-green/10 flex items-center justify-center text-brand-navy dark:text-brand-green-light">
             <Inbox className="w-6 h-6" />
           </div>
           <div>
@@ -130,7 +130,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Metric Card 2 */}
-        <div className="bg-white rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
+        <div className="bg-surface rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
           <div className="w-12 h-12 rounded-lg bg-brand-green/10 flex items-center justify-center text-brand-green-dark">
             <Award className="w-6 h-6" />
           </div>
@@ -145,7 +145,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Metric Card 3 */}
-        <div className="bg-white rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
+        <div className="bg-surface rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
           <div className="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-700">
             <MapPin className="w-6 h-6" />
           </div>
@@ -160,7 +160,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Metric Card 4 */}
-        <div className="bg-white rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
+        <div className="bg-surface rounded-xl border border-border-light p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition">
           <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-700">
             <Calendar className="w-6 h-6" />
           </div>
@@ -178,13 +178,13 @@ export default async function AdminDashboard() {
       {/* Content Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Recent Enquiries */}
-        <div className="lg:col-span-2 bg-white border border-border-light rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <div className="lg:col-span-2 bg-surface border border-border-light rounded-xl shadow-sm overflow-hidden flex flex-col">
           <div className="p-6 border-b border-border-light flex items-center justify-between">
             <h3 className="font-heading font-bold text-lg text-foreground flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-brand-green" />
               Latest Enquiries & Leads
             </h3>
-            <span className="text-xs bg-brand-navy/5 text-brand-navy dark:text-brand-green-light font-semibold px-2.5 py-1 rounded-full border border-brand-navy/10">
+            <span className="text-xs bg-brand-navy/5 dark:bg-brand-green/10 text-brand-navy dark:text-brand-green-light font-semibold px-2.5 py-1 rounded-full border border-brand-navy/10">
               Live Feed
             </span>
           </div>
@@ -229,7 +229,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Right Column: Quick Stats & Resource Shortcuts */}
-        <div className="bg-white border border-border-light rounded-xl shadow-sm p-6 flex flex-col justify-between">
+        <div className="bg-surface border border-border-light rounded-xl shadow-sm p-6 flex flex-col justify-between">
           <div className="space-y-6">
             <h3 className="font-heading font-bold text-lg text-foreground border-b border-border-light pb-4">
               Enquiry Breakdown
@@ -284,14 +284,14 @@ export default async function AdminDashboard() {
             <div className="grid grid-cols-2 gap-2">
               <Link 
                 href="/admin/programs"
-                className="flex items-center gap-1.5 p-2 rounded-lg bg-muted hover:bg-brand-navy/5 text-foreground-secondary hover:text-brand-navy text-xs font-semibold transition border border-transparent hover:border-brand-navy/10"
+                className="flex items-center gap-1.5 p-2 rounded-lg bg-muted hover:bg-brand-navy/5 dark:bg-brand-green/10 text-foreground-secondary hover:text-brand-navy text-xs font-semibold transition border border-transparent hover:border-brand-navy/10"
               >
                 <FileText className="w-3.5 h-3.5" />
                 Programs
               </Link>
               <Link 
                 href="/admin/branches"
-                className="flex items-center gap-1.5 p-2 rounded-lg bg-muted hover:bg-brand-navy/5 text-foreground-secondary hover:text-brand-navy text-xs font-semibold transition border border-transparent hover:border-brand-navy/10"
+                className="flex items-center gap-1.5 p-2 rounded-lg bg-muted hover:bg-brand-navy/5 dark:bg-brand-green/10 text-foreground-secondary hover:text-brand-navy text-xs font-semibold transition border border-transparent hover:border-brand-navy/10"
               >
                 <MapPin className="w-3.5 h-3.5" />
                 Branches

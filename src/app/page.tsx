@@ -208,7 +208,7 @@ function ProgramsSection() {
           {programs.map((program) => (
             <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
               <Card className="h-full p-6 group-hover:border-brand-green/30 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-brand-navy/5 flex items-center justify-center mb-4 group-hover:bg-brand-green/10 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-4 group-hover:bg-brand-green/10 transition-colors">
                   <program.icon className="w-6 h-6 text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
                 </div>
                 <h3 className="font-heading font-bold text-xl text-foreground mb-2">
@@ -460,7 +460,7 @@ function BranchesSection() {
           {branches.map((branch) => (
             <Link href={`/branches/${branch.slug}`} key={branch.slug} className="group">
               <Card className="p-6 text-center group-hover:border-brand-navy/30">
-                <div className="w-14 h-14 mx-auto rounded-full bg-brand-navy/5 flex items-center justify-center mb-4 group-hover:bg-brand-navy/10 transition-colors">
+                <div className="w-14 h-14 mx-auto rounded-full bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-4 group-hover:bg-brand-navy/10 dark:bg-brand-green/10 transition-colors">
                   <MapPin className="w-7 h-7 text-brand-navy dark:text-brand-green-light" />
                 </div>
                 <h3 className="font-heading font-bold text-xl text-foreground mb-1">
@@ -592,7 +592,107 @@ function FAQPreview() {
   );
 }
 
-// ─── FINAL CTA ───────────────────────────────────────────
+// ─── TESTIMONIALS ────────────────────────────────────────
+function TestimonialsSection() {
+  const testimonials = [
+    {
+      name: 'Priya Sharma',
+      role: 'Parent of a Taekwondo student',
+      quote:
+        'My daughter joined GOSEDMA two years ago and the transformation is incredible. She is more confident, disciplined, and fit. The coaches genuinely care about each child.',
+      stars: 5,
+      branch: 'Malviya Nagar',
+    },
+    {
+      name: 'Arjun Mehta',
+      role: 'Krav Maga & MMA student',
+      quote:
+        'I trained at several gyms before joining GOSEDMA. The level of technical instruction here is unmatched. Coach Richa Gaur\'s dedication to each student is what makes this place special.',
+      stars: 5,
+      branch: 'Sitapura',
+    },
+    {
+      name: 'Deepika Verma',
+      role: 'Self Defence Workshop attendee',
+      quote:
+        'The school workshop session was eye-opening for our students. It was practical, empowering and completely changed how my students think about personal safety.',
+      stars: 5,
+      branch: 'School Program',
+    },
+    {
+      name: 'Raj Agarwal',
+      role: 'Summer Camp parent',
+      quote:
+        'Both my kids attended the summer camp and loved it. Excellent facilities, professional trainers, and a great mix of fun and serious learning. Highly recommend!',
+      stars: 5,
+      branch: 'Malviya Nagar',
+    },
+    {
+      name: 'Sneha Joshi',
+      role: 'Muay Thai student',
+      quote:
+        'I joined for fitness but fell in love with Muay Thai. Three months in and I am stronger, faster, and more focused. GOSEDMA has the best trainers in Jaipur.',
+      stars: 5,
+      branch: 'Sitapura',
+    },
+    {
+      name: 'Rahul Bhatia',
+      role: 'Competition Training graduate',
+      quote:
+        'Won my first state-level Taekwondo medal after training under GOSEDMA\'s competition program. The structured coaching and focus on mental strength made all the difference.',
+      stars: 5,
+      branch: 'Malviya Nagar',
+    },
+  ];
+
+  return (
+    <section className="section-padding bg-muted/40 dark:bg-background">
+      <div className="container-wide">
+        <div className="text-center mb-12">
+          <Badge variant="green" className="mb-4">Student Stories</Badge>
+          <h2 className="section-title section-title-center font-heading font-extrabold text-3xl md:text-4xl mb-4">
+            What Our Students Say
+          </h2>
+          <p className="text-foreground-secondary max-w-2xl mx-auto">
+            Hundreds of students and families have transformed their lives through GOSEDMA training.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((t) => (
+            <div
+              key={t.name}
+              className="card p-6 flex flex-col gap-4"
+            >
+              {/* Stars */}
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: t.stars }).map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-brand-green text-brand-green" />
+                ))}
+              </div>
+
+              {/* Quote */}
+              <blockquote className="text-foreground-secondary text-sm leading-relaxed flex-1">
+                &ldquo;{t.quote}&rdquo;
+              </blockquote>
+
+              {/* Person */}
+              <div className="pt-3 border-t border-border-light dark:border-border">
+                <p className="font-heading font-bold text-foreground text-sm">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.role}</p>
+                <span className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-widest text-brand-green">
+                  {t.branch}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
 function FinalCTA() {
   return (
     <section className="relative bg-gradient-hero text-white overflow-hidden pattern-overlay">
@@ -641,6 +741,7 @@ export default function HomePage() {
       <FounderSection />
       <BranchesSection />
       <GalleryPreview />
+      <TestimonialsSection />
       <FAQPreview />
       <FinalCTA />
     </>

@@ -29,7 +29,7 @@ const CREDENTIAL_TYPES: Record<string, { label: string; icon: string }> = {
 };
 
 const VERIFICATION_STATUS: Record<string, { label: string; color: string }> = {
-  draft: { label: 'Unverified', color: 'bg-gray-50 text-gray-500 border-gray-200' },
+  draft: { label: 'Unverified', color: 'bg-gray-50 text-muted-foreground border-border-light' },
   client_verified: { label: 'Client Verified', color: 'bg-blue-50 text-blue-700 border-blue-200' },
   source_verified: { label: 'Source Verified', color: 'bg-green-50 text-green-700 border-green-200' },
 };
@@ -74,7 +74,7 @@ export default function AdminFounderPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-border-light shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border-light shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-foreground-secondary">
             <div className="animate-spin w-8 h-8 border-2 border-brand-navy border-t-transparent rounded-full mx-auto mb-3" />
@@ -111,10 +111,10 @@ export default function AdminFounderPage() {
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
                     <button onClick={() => togglePublished(cred.id, cred.published)}
-                      className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border transition ${cred.published ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}>
+                      className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border transition ${cred.published ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-muted-foreground border-border-light'}`}>
                       {cred.published ? <><Eye className="w-3 h-3" /> Live</> : <><EyeOff className="w-3 h-3" /> Draft</>}
                     </button>
-                    <button className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 transition"><Edit3 className="w-4 h-4" /></button>
+                    <button className="p-2 rounded-lg text-foreground-secondary hover:text-brand-navy hover:bg-brand-navy/5 dark:bg-brand-green/10 transition"><Edit3 className="w-4 h-4" /></button>
                     <button onClick={() => deleteCredential(cred.id, cred.title)} className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>

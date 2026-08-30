@@ -37,7 +37,7 @@ export default function AdminUsersPage() {
         <p className="text-sm text-foreground-secondary mt-1">Manage administrator accounts. Super Admin access only.</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-border-light shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border-light shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-foreground-secondary">
             <div className="animate-spin w-8 h-8 border-2 border-brand-navy border-t-transparent rounded-full mx-auto mb-3" />

@@ -20,7 +20,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
   new: { label: 'New', color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
   read: { label: 'Read', color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200' },
   responded: { label: 'Responded', color: 'text-green-700', bg: 'bg-green-50 border-green-200' },
-  closed: { label: 'Closed', color: 'text-gray-700', bg: 'bg-gray-50 border-gray-200' },
+  closed: { label: 'Closed', color: 'text-gray-700', bg: 'bg-gray-50 border-border-light' },
 };
 
 export default function ContactEnquiriesPage() {
@@ -85,7 +85,7 @@ export default function ContactEnquiriesPage() {
       <div className="flex flex-wrap gap-2">
         {(['all', 'new', 'read', 'responded', 'closed'] as const).map(status => (
           <button key={status} onClick={() => setStatusFilter(status)}
-            className={`px-4 py-2 text-sm font-semibold rounded-lg border transition-all ${statusFilter === status ? 'bg-brand-navy text-white border-brand-navy shadow-sm' : 'bg-white text-foreground-secondary border-border-light hover:border-brand-navy/30'}`}>
+            className={`px-4 py-2 text-sm font-semibold rounded-lg border transition-all ${statusFilter === status ? 'bg-brand-navy text-white border-brand-navy shadow-sm' : 'bg-surface text-foreground-secondary border-border-light hover:border-brand-navy/30'}`}>
             {status === 'all' ? 'All' : STATUS_CONFIG[status]?.label || status}
             <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${statusFilter === status ? 'bg-white/20' : 'bg-muted'}`}>{counts[status]}</span>
           </button>
@@ -96,12 +96,12 @@ export default function ContactEnquiriesPage() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-secondary" />
         <input type="text" placeholder="Search by name, phone or email..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-border-light rounded-lg text-sm text-foreground placeholder:text-foreground-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy transition" />
+          className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border-light rounded-lg text-sm text-foreground placeholder:text-foreground-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy transition" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* List */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-border-light shadow-sm overflow-hidden">
+        <div className="lg:col-span-2 bg-surface rounded-xl border border-border-light shadow-sm overflow-hidden">
           {loading ? (
             <div className="p-12 text-center text-foreground-secondary">
               <div className="animate-spin w-8 h-8 border-2 border-brand-navy border-t-transparent rounded-full mx-auto mb-3" />
@@ -119,7 +119,7 @@ export default function ContactEnquiriesPage() {
                 const isSelected = selectedEnquiry?.id === enquiry.id;
                 return (
                   <button key={enquiry.id} onClick={() => { setSelectedEnquiry(enquiry); setAdminNote(enquiry.admin_notes || ''); }}
-                    className={`w-full text-left p-5 hover:bg-muted/30 transition flex items-start justify-between gap-4 ${isSelected ? 'bg-brand-navy/5 border-l-3 border-l-brand-navy' : ''}`}>
+                    className={`w-full text-left p-5 hover:bg-muted/30 transition flex items-start justify-between gap-4 ${isSelected ? 'bg-brand-navy/5 dark:bg-brand-green/10 border-l-3 border-l-brand-navy' : ''}`}>
                     <div className="space-y-1.5 min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${statusInfo.bg} ${statusInfo.color}`}>{statusInfo.label}</span>
@@ -141,7 +141,7 @@ export default function ContactEnquiriesPage() {
         </div>
 
         {/* Detail */}
-        <div className="bg-white rounded-xl border border-border-light shadow-sm p-6 sticky top-6 h-fit">
+        <div className="bg-surface rounded-xl border border-border-light shadow-sm p-6 sticky top-6 h-fit">
           {selectedEnquiry ? (
             <div className="space-y-5">
               <div>
@@ -169,7 +169,7 @@ export default function ContactEnquiriesPage() {
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(STATUS_CONFIG).map(([key, config]) => (
                     <button key={key} onClick={() => updateStatus(selectedEnquiry.id, key)}
-                      className={`text-xs font-semibold py-2 px-3 rounded-lg border transition ${selectedEnquiry.status === key ? `${config.bg} ${config.color} ring-2 ring-offset-1 ring-current/20` : 'bg-white border-border-light text-foreground-secondary hover:border-brand-navy/20'}`}>
+                      className={`text-xs font-semibold py-2 px-3 rounded-lg border transition ${selectedEnquiry.status === key ? `${config.bg} ${config.color} ring-2 ring-offset-1 ring-current/20` : 'bg-surface border-border-light text-foreground-secondary hover:border-brand-navy/20'}`}>
                       {config.label}
                     </button>
                   ))}

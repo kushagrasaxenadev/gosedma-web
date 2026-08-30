@@ -127,7 +127,7 @@ export default function FAQPage() {
                   <details key={faq.q} className="card p-5 group cursor-pointer">
                     <summary className="flex items-center justify-between font-heading font-bold text-foreground list-none">
                       {faq.q}
-                      <ChevronRight className="w-5 h-5 text-brand-navy dark:text-brand-green-light shrink-0 ml-4 transition-transform group-open:rotate-90" />
+                      <ChevronRight className="w-5 h-5 text-brand-navy dark:text-brand-green dark:text-brand-green-light shrink-0 ml-4 transition-transform group-open:rotate-90" />
                     </summary>
                     <p className="mt-3 text-sm text-foreground-secondary leading-relaxed">
                       {faq.a}
