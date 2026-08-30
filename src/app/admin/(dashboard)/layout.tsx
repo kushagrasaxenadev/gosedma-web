@@ -11,14 +11,13 @@ interface AdminLayoutProps {
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const supabase = await createClient();
 
-  const isDemoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
   const cookieStore = await cookies();
   const demoCookie = cookieStore.get('gosedma_demo_admin');
   
   let profile = null;
 
-  if (isDemoMode && demoCookie?.value === 'true') {
-    profile = { role: 'super_admin', full_name: 'Demo Admin (No DB)', avatar_url: null };
+  if (demoCookie?.value === 'true') {
+    profile = { role: 'super_admin', full_name: 'Demo Admin (CMS Preview)', avatar_url: null };
   } else {
     // Retrieve user authentication status on the server
     const {

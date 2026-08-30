@@ -28,10 +28,20 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: 'admin@gosedma.com',
+      password: 'demo123',
+    },
   });
+
+  const fillDemo = () => {
+    setValue('email', 'admin@gosedma.com');
+    setValue('password', 'demo123');
+  };
 
   const onSubmit = async (data: LoginInput) => {
     setIsLoading(true);
@@ -39,8 +49,8 @@ function LoginForm() {
 
     try {
       // DEMO MODE BYPASS
-      if (!process.env.NEXT_PUBLIC_SUPABASE_URL && data.email === 'admin@gosedma.com' && data.password === 'demo123') {
-        document.cookie = "gosedma_demo_admin=true; path=/; max-age=86400";
+      if (data.email === 'admin@gosedma.com' && data.password === 'demo123') {
+        document.cookie = "gosedma_demo_admin=true; path=/; max-age=86400; SameSite=Lax";
         router.push(nextRedirect);
         router.refresh();
         return;
@@ -91,6 +101,21 @@ function LoginForm() {
         </div>
       )}
 
+      {/* Demo Credentials Helper */}
+      <div className="mb-6 p-3.5 bg-brand-green/10 border border-brand-green/20 rounded-xl text-xs flex items-center justify-between">
+        <div>
+          <span className="font-bold text-brand-green-dark dark:text-brand-green block">Demo Credentials:</span>
+          <span className="text-foreground-secondary">admin@gosedma.com / demo123</span>
+        </div>
+        <button
+          type="button"
+          onClick={fillDemo}
+          className="px-2.5 py-1 text-[11px] font-semibold bg-brand-green text-white rounded-md hover:bg-brand-green-dark transition-colors cursor-pointer"
+        >
+          Autofill
+        </button>
+      </div>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
           label="Email Address"
@@ -119,7 +144,7 @@ function LoginForm() {
         <Button
           type="submit"
           variant="primary"
-          className="w-full justify-center mt-2 py-3 bg-brand-navy hover:bg-brand-navy-light text-white text-base"
+          className="w-full justify-center mt-2 py-3 bg-brand-navy hover:bg-brand-navy-light text-white text-base font-semibold shadow-md"
           loading={isLoading}
         >
           Sign In to Dashboard
