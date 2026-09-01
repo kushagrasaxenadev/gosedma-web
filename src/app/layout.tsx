@@ -1,11 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Barlow_Condensed } from 'next/font/google';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
-import { WhatsAppFloat } from '@/components/layout/whatsapp-float';
-import { BackToTop } from '@/components/ui/back-to-top';
-import { CookieNotice } from '@/components/ui/cookie-notice';
 import { SITE_CONFIG } from '@/lib/constants';
+import { PublicShell } from '@/components/layout/public-shell';
 import './globals.css';
 
 const inter = Inter({
@@ -94,17 +90,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col">
-        <a href="#main-content" className="skip-link">
-          Skip to main content
-        </a>
-        <Header />
-        <main id="main-content" className="flex-1 pt-[calc(theme(spacing.16)+2rem)] lg:pt-[calc(theme(spacing.18)+2rem)]">
+        <PublicShell>
           {children}
-        </main>
-        <Footer />
-        <WhatsAppFloat />
-        <BackToTop />
-        <CookieNotice />
+        </PublicShell>
       </body>
     </html>
   );
