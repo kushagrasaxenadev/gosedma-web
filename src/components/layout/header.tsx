@@ -120,10 +120,11 @@ export function Header() {
         <nav ref={navRef} className="container-wide" aria-label="Main navigation">
           <div className="flex items-center justify-between h-16 lg:h-18">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 shrink-0" aria-label="GOSEDMA Home">
+            <Link href="/" className="flex items-center gap-2 shrink-0" aria-label="Go to GOSEDMA home">
               <Image
                 src="/images/logo-circular.png"
-                alt="GOSEDMA Logo"
+                alt=""
+                role="presentation"
                 width={44}
                 height={44}
                 className="w-10 h-10 lg:w-11 lg:h-11"

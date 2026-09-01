@@ -22,15 +22,17 @@ import {
 
 interface AdminNavProps {
   userRole: string;
+  onNavClick?: () => void;
 }
 
-export default function AdminNav({ userRole }: AdminNavProps) {
+export default function AdminNav({ userRole, onNavClick }: AdminNavProps) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
 
   const handleSignOut = async (e: React.MouseEvent) => {
     e.preventDefault();
+    onNavClick?.();
     await supabase.auth.signOut();
     router.push('/admin/login');
     router.refresh();
@@ -116,10 +118,11 @@ export default function AdminNav({ userRole }: AdminNavProps) {
       <div>
         <Link
           href="/admin"
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+          onClick={() => onNavClick?.()}
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors select-none cursor-pointer ${
             pathname === '/admin'
               ? 'bg-brand-navy text-white'
-              : 'text-white/70 hover:text-white hover:bg-brand-navy-light/10'
+              : 'text-white/70 hover:text-white hover:bg-brand-navy-light/20'
           }`}
         >
           <LayoutDashboard className="w-4.5 h-4.5" />
@@ -150,13 +153,14 @@ export default function AdminNav({ userRole }: AdminNavProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    onClick={() => onNavClick?.()}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors select-none cursor-pointer ${
                       isActive
                         ? 'bg-brand-navy-light/20 text-brand-green-light border-l-2 border-brand-green'
-                        : 'text-white/70 hover:text-white hover:bg-brand-navy-light/10'
+                        : 'text-white/70 hover:text-white hover:bg-white/10 active:bg-white/20'
                     }`}
                   >
-                    <Icon className="w-4.5 h-4.5 flex-shrink-0" />
+                    <Icon className="w-4 h-4 flex-shrink-0" />
                     <span className="truncate">{item.name}</span>
                   </Link>
                 );
@@ -169,10 +173,11 @@ export default function AdminNav({ userRole }: AdminNavProps) {
       {/* Logout Action */}
       <div className="pt-4 border-t border-brand-navy-light/10">
         <button
+          type="button"
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-error hover:bg-error/10 transition-colors text-left"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-red-400 hover:text-red-300 hover:bg-red-500/10 active:bg-red-500/20 transition-colors text-left cursor-pointer select-none"
         >
-          <LogOut className="w-4.5 h-4.5" />
+          <LogOut className="w-4 h-4" />
           <span>Sign Out</span>
         </button>
       </div>
