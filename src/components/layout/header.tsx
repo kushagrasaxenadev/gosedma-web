@@ -13,6 +13,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileOpenDropdown, setMobileOpenDropdown] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(false);
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
@@ -24,11 +25,19 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Close mobile menu and dropdowns on route change
   useEffect(() => {
     setMobileOpen(false);
     setOpenDropdown(null);
+    setMobileOpenDropdown(null);
   }, [pathname]);
+
+  // Reset mobile dropdown when mobile menu closes
+  useEffect(() => {
+    if (!mobileOpen) {
+      setMobileOpenDropdown(null);
+    }
+  }, [mobileOpen]);
 
   // Trap focus and prevent scroll when mobile menu is open
   useEffect(() => {
@@ -253,7 +262,7 @@ export function Header() {
         </nav>
       </div>
 
-      {/* Mobile Navigation — Full screen overlay with top z-index and explicit pointer-events-auto */}
+      {/* Mobile Navigation — Full screen overlay */}
       <div
         id="mobile-menu"
         className={cn(
@@ -261,28 +270,31 @@ export function Header() {
           mobileOpen ? 'visible opacity-100 pointer-events-auto' : 'invisible opacity-0 pointer-events-none'
         )}
       >
-        {/* Backdrop — captures clicks and closes menu */}
+        {/* Backdrop — behind the panel, closes menu on tap */}
         <div
           className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer pointer-events-auto"
+          style={{ zIndex: 1 }}
           onClick={() => setMobileOpen(false)}
           aria-hidden="true"
         />
 
-        {/* Menu panel — full height, scrollable, touch-friendly, non-selectable text */}
+        {/* Menu panel — sits above backdrop */}
         <div
           className={cn(
-            'absolute top-0 right-0 h-full w-full max-w-xs sm:max-w-sm bg-surface dark:bg-brand-deep-navy shadow-2xl overflow-y-auto transition-transform duration-300 border-l border-border-light dark:border-white/10 z-10 pointer-events-auto select-none touch-manipulation flex flex-col',
+            'absolute top-0 right-0 h-full w-[85vw] max-w-xs bg-surface dark:bg-brand-deep-navy shadow-2xl overflow-y-auto transition-transform duration-300 border-l border-border-light dark:border-white/10 flex flex-col touch-manipulation pointer-events-auto select-none',
             mobileOpen ? 'translate-x-0' : 'translate-x-full'
           )}
+          style={{ zIndex: 2 }}
+          onClick={(e) => e.stopPropagation()}
         >
           {/* Mobile menu header */}
-          <div className="flex items-center justify-between p-4 border-b border-border-light dark:border-white/10 shrink-0 bg-surface dark:bg-brand-deep-navy sticky top-0 z-20">
+          <div className="flex items-center justify-between p-4 border-b border-border-light dark:border-white/10 shrink-0 bg-surface dark:bg-brand-deep-navy sticky top-0" style={{ zIndex: 3 }}>
             <Link
               href="/"
               className="flex items-center gap-2 cursor-pointer"
               onClick={() => setMobileOpen(false)}
             >
-              <Image src="/images/logo-circular.png" alt="GOSEDMA" width={36} height={36} className="w-9 h-9" />
+              <Image src="/images/logo-circular.png" alt="" role="presentation" width={36} height={36} className="w-9 h-9" />
               <span className="font-heading font-bold text-lg text-foreground dark:text-white">GOSEDMA</span>
             </Link>
             <button
@@ -295,67 +307,74 @@ export function Header() {
             </button>
           </div>
 
-          <div className="p-5 space-y-1 flex-1">
+          <div className="p-4 space-y-1 flex-1">
             {NAV_LINKS.map((link) => (
               <div key={link.href}>
                 {'children' in link && link.children ? (
-                  <>
+                  <div>
                     <button
                       type="button"
                       className={cn(
-                        'flex items-center justify-between w-full px-3 py-3 text-base font-semibold rounded-lg transition-colors cursor-pointer select-none text-left',
+                        'flex items-center justify-between w-full px-3 py-3.5 text-base font-semibold rounded-lg transition-colors cursor-pointer text-left',
                         isActive(link.href)
                           ? 'text-brand-navy dark:text-brand-green bg-brand-navy/5 dark:bg-brand-green/10'
                           : 'text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/5 active:bg-muted/80'
                       )}
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
-                        setOpenDropdown(
-                          openDropdown === link.label ? null : link.label
+                        setMobileOpenDropdown(
+                          mobileOpenDropdown === link.label ? null : link.label
                         );
                       }}
-                      aria-expanded={openDropdown === link.label}
+                      aria-expanded={mobileOpenDropdown === link.label}
                     >
                       <span>{link.label}</span>
                       <ChevronDown
                         className={cn(
-                          'w-4 h-4 transition-transform duration-200',
-                          openDropdown === link.label && 'rotate-180'
+                          'w-5 h-5 transition-transform duration-200 flex-shrink-0 text-foreground-secondary dark:text-white/70',
+                          mobileOpenDropdown === link.label && 'rotate-180 text-brand-green dark:text-brand-green'
                         )}
                       />
                     </button>
 
-                    {openDropdown === link.label && (
-                      <div className="ml-3 space-y-1 border-l-2 border-brand-green/40 pl-3 my-1">
+                    {mobileOpenDropdown === link.label && (
+                      <div className="ml-3 mt-1 mb-2 space-y-1 border-l-2 border-brand-green/40 pl-3">
                         {link.children.map((child) => (
                           <Link
                             key={child.href}
                             href={child.href}
                             className={cn(
-                              'block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors cursor-pointer select-none',
+                              'block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors cursor-pointer',
                               'featured' in child && child.featured
                                 ? 'text-brand-green font-semibold hover:bg-brand-green/5'
                                 : 'text-foreground-secondary dark:text-white/70 hover:text-brand-navy dark:hover:text-white hover:bg-muted dark:hover:bg-white/5',
                               isActive(child.href) && 'text-brand-navy dark:text-brand-green bg-brand-navy/5 dark:bg-brand-green/10'
                             )}
-                            onClick={() => setMobileOpen(false)}
+                            onClick={() => {
+                              setMobileOpen(false);
+                              setMobileOpenDropdown(null);
+                            }}
                           >
                             {child.label}
                           </Link>
                         ))}
                       </div>
                     )}
-                  </>
+                  </div>
                 ) : (
                   <Link
                     href={link.href}
                     className={cn(
-                      'block px-3 py-3 text-base font-semibold rounded-lg transition-colors cursor-pointer select-none',
+                      'block px-3 py-3.5 text-base font-semibold rounded-lg transition-colors cursor-pointer',
                       isActive(link.href)
                         ? 'text-brand-navy dark:text-brand-green bg-brand-navy/5 dark:bg-brand-green/10'
                         : 'text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/5 active:bg-muted/80'
                     )}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() => {
+                      setMobileOpen(false);
+                      setMobileOpenDropdown(null);
+                    }}
                   >
                     {link.label}
                   </Link>
