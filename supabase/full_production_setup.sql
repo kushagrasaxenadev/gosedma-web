@@ -260,6 +260,7 @@ create table if not exists public.trial_enquiries (
     name text,
     student_age text,
     parent_name text,
+    guardian_name text,
     age_group text,
     phone text not null,
     whatsapp text,
@@ -284,6 +285,7 @@ create table if not exists public.trial_enquiries (
 create table if not exists public.workshop_enquiries (
     id uuid default gen_random_uuid() primary key,
     institution_name text not null,
+    organization_name text,
     institution_type text,
     contact_person text not null,
     designation text,

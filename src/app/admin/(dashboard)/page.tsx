@@ -54,17 +54,17 @@ export default async function AdminDashboard() {
 
   const { data: recentTrials } = await supabase
     .from('trial_enquiries')
-    .select('id, student_name, guardian_name, phone, selected_program, status, created_at')
+    .select('id, name, student_name, parent_name, phone, interested_program, selected_program, status, created_at')
     .order('created_at', { ascending: false })
     .limit(3);
 
   const { data: recentWorkshops } = await supabase
     .from('workshop_enquiries')
-    .select('id, organization_name, contact_person, phone, workshop_type, status, created_at')
+    .select('id, institution_name, contact_person, phone, workshop_type, status, created_at')
     .order('created_at', { ascending: false })
     .limit(3);
 
-  const contactList = recentContacts?.map((c: { id: string; name: string; email: string; phone: string; message: string; created_at: string }) => ({
+  const contactList = recentContacts?.map((c: any) => ({
     id: c.id,
     type: 'Contact Enquiry',
     title: c.name,
@@ -74,20 +74,20 @@ export default async function AdminDashboard() {
     link: '/admin/enquiries/contact'
   })) || [];
 
-  const trialList = recentTrials?.map((t: { id: string; student_name: string; guardian_name: string | null; phone: string; selected_program: string; status: string; created_at: string }) => ({
+  const trialList = recentTrials?.map((t: any) => ({
     id: t.id,
     type: 'Trial Booking',
-    title: `${t.student_name} (${t.selected_program})`,
-    subtitle: `Guardian: ${t.guardian_name || 'N/A'} • Status: ${t.status}`,
+    title: `${t.student_name || t.name || 'Student'} (${t.selected_program || t.interested_program || 'Trial'})`,
+    subtitle: `Parent: ${t.parent_name || 'N/A'} • Status: ${t.status}`,
     date: new Date(t.created_at).toLocaleDateString(),
     badgeColor: 'bg-brand-green/10 text-brand-green-dark border-brand-green/20',
     link: '/admin/enquiries/trial'
   })) || [];
 
-  const workshopList = recentWorkshops?.map((w: { id: string; organization_name: string; contact_person: string; phone: string; workshop_type: string; status: string; created_at: string }) => ({
+  const workshopList = recentWorkshops?.map((w: any) => ({
     id: w.id,
     type: 'Workshop Request',
-    title: w.organization_name,
+    title: w.institution_name || 'Organization',
     subtitle: `Contact: ${w.contact_person} • Type: ${w.workshop_type}`,
     date: new Date(w.created_at).toLocaleDateString(),
     badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
