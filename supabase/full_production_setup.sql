@@ -513,3 +513,14 @@ values
 ('contact_details', '{"phone": "+91-9999999999", "whatsapp": "919999999999", "email": "info@gosedma.com", "address": "Jaipur, Rajasthan"}', 'Primary contact values'),
 ('social_links', '{"facebook": "https://facebook.com/gosedma", "instagram": "https://instagram.com/gosedma", "youtube": "https://youtube.com/@gosedma"}', 'Social media URLs')
 on conflict (key) do update set value = excluded.value;
+
+-- ─── 7. SCHEMA & ROLE PRIVILEGES ───────────────────────────────────────────────
+-- Ensure PostgREST Data API roles can access the public schema
+-- (Row Level Security policies above enforce who can read/write each row)
+grant usage on schema public to anon, authenticated;
+grant all on all tables in schema public to anon, authenticated, service_role;
+grant all on all sequences in schema public to anon, authenticated, service_role;
+grant all on all routines in schema public to anon, authenticated, service_role;
+alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
+alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
+alter default privileges in schema public grant all on routines to anon, authenticated, service_role;
