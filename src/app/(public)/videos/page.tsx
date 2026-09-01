@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Badge } from '@/components/ui/badge';
-import { Video as VideoIcon, Play, ExternalLink } from 'lucide-react';
+import { Video as VideoIcon, ExternalLink, Play } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 
 export const revalidate = 0;
@@ -10,10 +10,40 @@ export const metadata: Metadata = {
   description: 'GOSEDMA training videos, technique demonstrations, competition highlights, and academy events.',
 };
 
-function getYouTubeId(url: string): string | null {
-  if (!url) return null;
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
-  return match ? match[1] : null;
+function parseVideoUrl(url: string) {
+  if (!url) return { provider: 'unknown', id: null, embedUrl: '', thumbnailUrl: null };
+
+  // 1. YouTube
+  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
+  if (ytMatch) {
+    const id = ytMatch[1];
+    return {
+      provider: 'youtube',
+      id,
+      embedUrl: `https://www.youtube-nocookie.com/embed/${id}`,
+      thumbnailUrl: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+    };
+  }
+
+  // 2. Google Drive
+  const driveFileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  const driveIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  const driveId = driveFileMatch?.[1] || driveIdMatch?.[1];
+  if (driveId) {
+    return {
+      provider: 'googledrive',
+      id: driveId,
+      embedUrl: `https://drive.google.com/file/d/${driveId}/preview`,
+      thumbnailUrl: null,
+    };
+  }
+
+  return {
+    provider: 'direct',
+    id: null,
+    embedUrl: url,
+    thumbnailUrl: null,
+  };
 }
 
 export default async function VideosPage() {
@@ -62,9 +92,8 @@ export default async function VideosPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {(videoList as any[]).map((video: any) => {
-                const ytId = getYouTubeId(video.youtube_url);
-                const thumbUrl =
-                  video.thumbnail_url || (ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null);
+                const parsed = parseVideoUrl(video.youtube_url);
+                const thumbUrl = video.thumbnail_url || parsed.thumbnailUrl;
 
                 return (
                   <div
@@ -73,9 +102,9 @@ export default async function VideosPage() {
                   >
                     {/* Video Player / Embed */}
                     <div className="aspect-video bg-black relative overflow-hidden">
-                      {ytId ? (
+                      {parsed.embedUrl ? (
                         <iframe
-                          src={`https://www.youtube-nocookie.com/embed/${ytId}`}
+                          src={parsed.embedUrl}
                           title={video.title}
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
@@ -95,6 +124,9 @@ export default async function VideosPage() {
                     <div className="p-5 flex-1 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-muted text-foreground-secondary">
+                            {parsed.provider === 'googledrive' ? 'Google Drive' : 'YouTube'}
+                          </span>
                           {video.category && (
                             <Badge variant="navy" className="text-[10px]">
                               {video.category}
@@ -102,7 +134,7 @@ export default async function VideosPage() {
                           )}
                           {video.featured && (
                             <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">
-                              ★ Featured
+                              ★ Featured Hero
                             </span>
                           )}
                         </div>
@@ -123,7 +155,7 @@ export default async function VideosPage() {
                           rel="noopener noreferrer"
                           className="text-brand-navy dark:text-brand-green-light hover:underline inline-flex items-center gap-1 font-semibold"
                         >
-                          Watch on YouTube <ExternalLink className="w-3 h-3" />
+                          Open Video Link <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>
                     </div>

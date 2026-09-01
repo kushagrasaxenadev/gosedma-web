@@ -2,25 +2,55 @@
 
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Video, Plus, Edit3, Trash2, Eye, EyeOff, Star, ExternalLink, X, Check, AlertCircle } from 'lucide-react';
+import { Video, Plus, Edit3, Trash2, Eye, EyeOff, Star, ExternalLink, X, Check, AlertCircle, PlayCircle, Sparkles } from 'lucide-react';
 
 interface VideoItem {
   id: string;
   title: string;
   description: string | null;
-  youtube_url: string;
+  youtube_url: string; // Used for both YouTube and Google Drive links
   thumbnail_url: string | null;
   category: string | null;
-  featured: boolean;
+  featured: boolean; // Used to pick which video is featured in the 1st initial site view frame (Hero section)
   published: boolean;
   sort_order: number;
   created_at: string;
 }
 
-function getYouTubeId(url: string): string | null {
-  if (!url) return null;
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
-  return match ? match[1] : null;
+export function parseVideoUrl(url: string) {
+  if (!url) return { provider: 'unknown', id: null, embedUrl: '', thumbnailUrl: null };
+
+  // 1. YouTube
+  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
+  if (ytMatch) {
+    const id = ytMatch[1];
+    return {
+      provider: 'youtube',
+      id,
+      embedUrl: `https://www.youtube-nocookie.com/embed/${id}`,
+      thumbnailUrl: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+    };
+  }
+
+  // 2. Google Drive
+  const driveFileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  const driveIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  const driveId = driveFileMatch?.[1] || driveIdMatch?.[1];
+  if (driveId) {
+    return {
+      provider: 'googledrive',
+      id: driveId,
+      embedUrl: `https://drive.google.com/file/d/${driveId}/preview`,
+      thumbnailUrl: null,
+    };
+  }
+
+  return {
+    provider: 'direct',
+    id: null,
+    embedUrl: url,
+    thumbnailUrl: null,
+  };
 }
 
 export default function AdminVideosPage() {
@@ -33,10 +63,10 @@ export default function AdminVideosPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: '',
-    youtube_url: '',
+    video_url: '',
     category: 'Training',
     description: '',
-    featured: false,
+    featured: false, // Hero video selection
     published: true,
   });
   const [formSaving, setFormSaving] = useState(false);
@@ -61,7 +91,7 @@ export default function AdminVideosPage() {
     setEditingId(null);
     setFormData({
       title: '',
-      youtube_url: '',
+      video_url: '',
       category: 'Training',
       description: '',
       featured: false,
@@ -75,7 +105,7 @@ export default function AdminVideosPage() {
     setEditingId(video.id);
     setFormData({
       title: video.title || '',
-      youtube_url: video.youtube_url || '',
+      video_url: video.youtube_url || '',
       category: video.category || 'Training',
       description: video.description || '',
       featured: !!video.featured,
@@ -91,21 +121,29 @@ export default function AdminVideosPage() {
       setFormError('Video title is required.');
       return;
     }
-    if (!formData.youtube_url.trim()) {
-      setFormError('YouTube URL is required.');
+    if (!formData.video_url.trim()) {
+      setFormError('Video URL (YouTube or Google Drive) is required.');
       return;
     }
 
-    const ytId = getYouTubeId(formData.youtube_url.trim());
-    const thumbnail_url = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null;
+    const parsed = parseVideoUrl(formData.video_url.trim());
+    if (parsed.provider === 'unknown' || !parsed.embedUrl) {
+      setFormError('Please enter a valid YouTube or Google Drive link.');
+      return;
+    }
 
     setFormSaving(true);
     setFormError(null);
 
+    // If this video is marked as hero (featured), un-feature other videos so only 1 primary hero video is selected
+    if (formData.featured) {
+      await supabase.from('videos').update({ featured: false }).neq('id', editingId || 'none');
+    }
+
     const payload = {
       title: formData.title.trim(),
-      youtube_url: formData.youtube_url.trim(),
-      thumbnail_url,
+      youtube_url: formData.video_url.trim(),
+      thumbnail_url: parsed.thumbnailUrl,
       category: formData.category.trim() || null,
       description: formData.description.trim() || null,
       featured: formData.featured,
@@ -126,9 +164,9 @@ export default function AdminVideosPage() {
       }
 
       setVideos(prev =>
-        prev.map(v => (v.id === editingId ? { ...v, ...payload } : v))
+        prev.map(v => (v.id === editingId ? { ...v, ...payload } : formData.featured ? { ...v, featured: false } : v))
       );
-      setSuccessMessage('Video updated successfully in database!');
+      setSuccessMessage('Video updated successfully!');
     } else {
       // INSERT new video
       const newRecord = {
@@ -149,7 +187,7 @@ export default function AdminVideosPage() {
       }
 
       if (data) {
-        setVideos(prev => [...prev, data as VideoItem]);
+        setVideos(prev => [...(formData.featured ? prev.map(p => ({ ...p, featured: false })) : prev), data as VideoItem]);
       } else {
         await fetchVideos();
       }
@@ -178,16 +216,28 @@ export default function AdminVideosPage() {
     }
   };
 
-  const toggleFeatured = async (id: string, current: boolean) => {
+  // Set as Hero Video (1st initial site view frame)
+  const setAsHeroVideo = async (id: string, current: boolean) => {
+    const nextState = !current;
+    if (nextState) {
+      // Un-feature all other videos first
+      await supabase.from('videos').update({ featured: false }).neq('id', id);
+    }
     const { error } = await supabase
       .from('videos')
-      .update({ featured: !current })
+      .update({ featured: nextState })
       .eq('id', id);
 
     if (!error) {
       setVideos(prev =>
-        prev.map(v => (v.id === id ? { ...v, featured: !current } : v))
+        prev.map(v => (v.id === id ? { ...v, featured: nextState } : nextState ? { ...v, featured: false } : v))
       );
+      setSuccessMessage(
+        nextState
+          ? '🌟 Set as Hero Video! This video will now appear on the 1st initial site view frame.'
+          : 'Hero video selection removed.'
+      );
+      setTimeout(() => setSuccessMessage(null), 4000);
     }
   };
 
@@ -203,7 +253,7 @@ export default function AdminVideosPage() {
     }
   };
 
-  const previewYtId = getYouTubeId(formData.youtube_url);
+  const previewInfo = parseVideoUrl(formData.video_url);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -212,10 +262,10 @@ export default function AdminVideosPage() {
         <div>
           <h2 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
             <Video className="w-6 h-6 text-brand-green" />
-            YouTube Videos
+            Video Management (YouTube & Google Drive)
           </h2>
           <p className="text-sm text-foreground-secondary mt-1">
-            Manage YouTube video embeds for the public website. Changes reflect immediately.
+            Add YouTube or Google Drive video links. Pick any video segment to display on the 1st initial site view frame (Hero section).
           </p>
         </div>
         <button
@@ -251,7 +301,7 @@ export default function AdminVideosPage() {
           <div className="col-span-full bg-surface rounded-xl border border-border-light p-12 text-center text-foreground-secondary">
             <Video className="w-10 h-10 mx-auto mb-3 text-foreground-secondary/30" />
             <p className="font-medium">No videos found.</p>
-            <p className="text-sm mt-1 mb-4">Add your first YouTube video to display it on the website.</p>
+            <p className="text-sm mt-1 mb-4">Add your first YouTube or Google Drive video to display it on the website.</p>
             <button
               type="button"
               onClick={openAddModal}
@@ -262,29 +312,39 @@ export default function AdminVideosPage() {
           </div>
         ) : (
           videos.map(video => {
-            const ytId = getYouTubeId(video.youtube_url);
-            const thumbUrl =
-              video.thumbnail_url || (ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null);
+            const parsed = parseVideoUrl(video.youtube_url);
+            const thumbUrl = video.thumbnail_url || parsed.thumbnailUrl;
 
             return (
               <div
                 key={video.id}
-                className="bg-surface rounded-xl border border-border-light shadow-sm overflow-hidden hover:shadow-md transition flex flex-col"
+                className={`bg-surface rounded-xl border shadow-sm overflow-hidden hover:shadow-md transition flex flex-col ${
+                  video.featured ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-border-light'
+                }`}
               >
                 <div className="aspect-video bg-black relative">
                   {thumbUrl ? (
                     <img src={thumbUrl} alt={video.title} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-navy/20 to-brand-green/10">
-                      <Video className="w-12 h-12 text-white/30" />
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-navy/30 to-brand-green/20 text-white">
+                      <PlayCircle className="w-12 h-12 text-white/70 mb-1" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-white/80">
+                        {parsed.provider === 'googledrive' ? 'Google Drive Video' : 'Video Player'}
+                      </span>
                     </div>
                   )}
 
-                  {/* YouTube badge overlay */}
+                  {/* Provider & Status Badges */}
+                  <div className="absolute top-3 left-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow bg-black/70 text-white">
+                      {parsed.provider === 'googledrive' ? 'Google Drive' : 'YouTube'}
+                    </span>
+                  </div>
+
                   <div className="absolute top-3 right-3 flex items-center gap-1.5">
                     {video.featured && (
-                      <span className="text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded shadow">
-                        ★ Featured
+                      <span className="text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded shadow flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" /> 1st View Hero
                       </span>
                     )}
                     <span
@@ -303,26 +363,34 @@ export default function AdminVideosPage() {
                     <p className="text-xs text-foreground-secondary/70 truncate mb-2 font-mono">
                       {video.youtube_url}
                     </p>
-                    {video.category && (
-                      <span className="text-[10px] font-medium bg-muted px-2 py-0.5 rounded text-foreground-secondary">
-                        {video.category}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {video.category && (
+                        <span className="text-[10px] font-medium bg-muted px-2 py-0.5 rounded text-foreground-secondary">
+                          {video.category}
+                        </span>
+                      )}
+                      {video.featured && (
+                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">
+                          Active on Homepage Hero
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-1.5 pt-3 mt-3 border-t border-border-light">
-                    {/* Featured toggle */}
+                    {/* Pick as Hero Video for 1st Initial Site View Frame */}
                     <button
                       type="button"
-                      onClick={() => toggleFeatured(video.id, video.featured)}
-                      title={video.featured ? 'Featured on home' : 'Not featured'}
-                      className={`p-2 rounded-lg transition cursor-pointer ${
+                      onClick={() => setAsHeroVideo(video.id, video.featured)}
+                      title={video.featured ? 'Selected as Hero 1st View Video' : 'Click to show on 1st Initial Frame (Hero)'}
+                      className={`px-2 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer ${
                         video.featured
-                          ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/30'
-                          : 'text-foreground-secondary/40 hover:text-amber-500'
+                          ? 'text-amber-700 bg-amber-100 dark:bg-amber-950/50 dark:text-amber-300'
+                          : 'text-foreground-secondary/60 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20'
                       }`}
                     >
-                      <Star className="w-4 h-4" fill={video.featured ? 'currentColor' : 'none'} />
+                      <Star className="w-3.5 h-3.5" fill={video.featured ? 'currentColor' : 'none'} />
+                      <span className="hidden sm:inline">{video.featured ? 'Hero Active' : 'Set Hero'}</span>
                     </button>
 
                     {/* Published toggle */}
@@ -339,7 +407,7 @@ export default function AdminVideosPage() {
                       {video.published ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                     </button>
 
-                    {/* Edit Video (Loads into modal to update URL / title) */}
+                    {/* Edit Video */}
                     <button
                       type="button"
                       onClick={() => openEditModal(video)}
@@ -349,12 +417,12 @@ export default function AdminVideosPage() {
                       <Edit3 className="w-4 h-4" />
                     </button>
 
-                    {/* View external link */}
+                    {/* Open link */}
                     <a
                       href={video.youtube_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title="Open on YouTube"
+                      title="Open source video link"
                       className="p-2 rounded-lg text-foreground-secondary hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
                     >
                       <ExternalLink className="w-4 h-4" />
@@ -386,7 +454,7 @@ export default function AdminVideosPage() {
             <div className="p-5 border-b border-border-light flex items-center justify-between">
               <h3 className="font-heading font-bold text-lg text-foreground flex items-center gap-2">
                 <Video className="w-5 h-5 text-brand-green" />
-                {editingId ? 'Edit YouTube Video' : 'Add New YouTube Video'}
+                {editingId ? 'Edit Video Link' : 'Add New Video (YouTube or Google Drive)'}
               </h3>
               <button
                 type="button"
@@ -421,32 +489,42 @@ export default function AdminVideosPage() {
 
               <div>
                 <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1.5">
-                  YouTube Video URL <span className="text-red-500">*</span>
+                  Video Link (YouTube OR Google Drive) <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="url"
                   required
-                  placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
-                  value={formData.youtube_url}
-                  onChange={e => setFormData({ ...formData, youtube_url: e.target.value })}
+                  placeholder="Paste YouTube link OR Google Drive share link (drive.google.com/file/d/...)"
+                  value={formData.video_url}
+                  onChange={e => setFormData({ ...formData, video_url: e.target.value })}
                   className="w-full px-3.5 py-2.5 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy font-mono text-xs"
                 />
                 <p className="text-[11px] text-foreground-secondary mt-1">
-                  Accepts standard YouTube links or short links (youtu.be).
+                  Supports: YouTube links (e.g. `youtube.com/watch?v=...`, `youtu.be/...`) AND Google Drive links (make sure link sharing is set to &ldquo;Anyone with the link can view&rdquo;).
                 </p>
               </div>
 
-              {/* Live Preview of Thumbnail */}
-              {previewYtId && (
-                <div className="rounded-lg overflow-hidden border border-border bg-muted p-2 flex items-center gap-3">
-                  <img
-                    src={`https://img.youtube.com/vi/${previewYtId}/mqdefault.jpg`}
-                    alt="Preview"
-                    className="w-24 h-14 object-cover rounded"
-                  />
+              {/* Live Preview */}
+              {previewInfo.embedUrl && (
+                <div className="rounded-lg overflow-hidden border border-border bg-muted p-3 flex items-center gap-3">
+                  {previewInfo.thumbnailUrl ? (
+                    <img
+                      src={previewInfo.thumbnailUrl}
+                      alt="Preview"
+                      className="w-24 h-14 object-cover rounded"
+                    />
+                  ) : (
+                    <div className="w-24 h-14 bg-brand-navy/20 rounded flex items-center justify-center">
+                      <PlayCircle className="w-8 h-8 text-brand-green" />
+                    </div>
+                  )}
                   <div className="text-xs text-foreground-secondary">
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400 block">✓ Valid YouTube Video</span>
-                    <span>Video ID: {previewYtId}</span>
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400 block">
+                      ✓ Valid {previewInfo.provider === 'googledrive' ? 'Google Drive' : 'YouTube'} Video
+                    </span>
+                    <span className="text-[11px] text-muted-foreground truncate block max-w-xs">
+                      Embed: {previewInfo.embedUrl}
+                    </span>
                   </div>
                 </div>
               )}
@@ -465,11 +543,11 @@ export default function AdminVideosPage() {
                     <option value="Self Defence">Self Defence</option>
                     <option value="Championship">Championship</option>
                     <option value="Workshop">Workshop</option>
-                    <option value="Event">Event</option>
+                    <option value="Highlights">Highlights</option>
                   </select>
                 </div>
 
-                <div className="space-y-2 pt-5">
+                <div className="space-y-2 pt-2">
                   <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-foreground">
                     <input
                       type="checkbox"
@@ -477,17 +555,18 @@ export default function AdminVideosPage() {
                       onChange={e => setFormData({ ...formData, published: e.target.checked })}
                       className="w-4 h-4 rounded text-brand-green focus:ring-brand-green"
                     />
-                    <span>Live on website (Published)</span>
+                    <span>Live on website</span>
                   </label>
 
-                  <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-foreground">
+                  {/* Pick video for 1st initial frame */}
+                  <label className="flex items-center gap-2 cursor-pointer text-sm font-bold text-amber-600 dark:text-amber-400">
                     <input
                       type="checkbox"
                       checked={formData.featured}
                       onChange={e => setFormData({ ...formData, featured: e.target.checked })}
                       className="w-4 h-4 rounded text-amber-500 focus:ring-amber-500"
                     />
-                    <span>Featured Video</span>
+                    <span>★ Pick for 1st Initial Site View Frame (Hero)</span>
                   </label>
                 </div>
               </div>

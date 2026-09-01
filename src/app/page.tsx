@@ -91,16 +91,33 @@ function getProgramIcon(slug: string, category?: string) {
   return Target;
 }
 
+function parseVideoEmbed(url: string) {
+  if (!url) return null;
+  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
+  if (ytMatch) {
+    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}`;
+  }
+  const driveFileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  const driveIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  const driveId = driveFileMatch?.[1] || driveIdMatch?.[1];
+  if (driveId) {
+    return `https://drive.google.com/file/d/${driveId}/preview`;
+  }
+  return url;
+}
+
 // ─── HERO SECTION ────────────────────────────────────────
-function HeroSection() {
+function HeroSection({ heroVideo }: { heroVideo: any }) {
+  const embedUrl = heroVideo?.youtube_url ? parseVideoEmbed(heroVideo.youtube_url) : null;
+
   return (
     <section className="relative bg-gradient-hero text-white overflow-hidden pattern-overlay">
       {/* Decorative arcs */}
       <div className="arc-decoration -top-20 -right-20 w-80 h-80 opacity-20" />
       <div className="arc-decoration -bottom-32 -left-32 w-96 h-96 opacity-10" />
 
-      <div className="container-wide relative z-10 py-16 md:py-24 lg:py-32">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+      <div className="container-wide relative z-10 py-16 md:py-24 lg:py-28">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div className="text-center lg:text-left">
             <Badge variant="green" className="mb-5 text-white bg-brand-green/20 border border-brand-green/30">
               Est. {SITE_CONFIG.establishedYear} • {SITE_CONFIG.city}, {SITE_CONFIG.state}
@@ -138,21 +155,45 @@ function HeroSection() {
             </div>
           </div>
 
-          {/* Hero image */}
-          <div className="relative hidden lg:flex justify-center">
-            <div className="relative w-[420px] h-[420px]">
-              {/* Glowing ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-brand-green/20 animate-[pulse-subtle_3s_ease-in-out_infinite]" />
-              <div className="absolute inset-4 rounded-full border border-white/10" />
-              <Image
-                src="/images/logo-globe.png"
-                alt="GOSEDMA — Global Institute of Self Defence & Martial Arts"
-                width={380}
-                height={380}
-                className="absolute inset-5 w-[calc(100%-40px)] h-[calc(100%-40px)] object-contain drop-shadow-2xl"
-                priority
-              />
-            </div>
+          {/* 1st Initial Site View Frame: Featured Video OR Official Crest */}
+          <div className="relative flex justify-center w-full max-w-xl mx-auto lg:max-w-none">
+            {embedUrl ? (
+              <div className="w-full">
+                <div className="relative rounded-2xl overflow-hidden border-2 border-brand-green/40 shadow-2xl bg-black aspect-video group">
+                  <iframe
+                    src={embedUrl}
+                    title={heroVideo.title || 'Featured Academy Video'}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mt-3 flex items-center justify-between px-1">
+                  <span className="text-xs text-white/90 font-medium flex items-center gap-1.5 truncate">
+                    <span className="w-2 h-2 rounded-full bg-brand-green animate-pulse" />
+                    {heroVideo.title}
+                  </span>
+                  <Link href="/videos" className="text-xs text-brand-green hover:underline flex-shrink-0 ml-2">
+                    Video Gallery →
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="relative w-[340px] h-[340px] sm:w-[420px] sm:h-[420px]">
+                {/* Glowing ring */}
+                <div className="absolute inset-0 rounded-full border-2 border-brand-green/20 animate-[pulse-subtle_3s_ease-in-out_infinite]" />
+                <div className="absolute inset-4 rounded-full border border-white/10" />
+                <Image
+                  src="/images/logo-globe.png"
+                  alt="GOSEDMA — Global Institute of Self Defence & Martial Arts"
+                  width={380}
+                  height={380}
+                  className="absolute inset-5 w-[calc(100%-40px)] h-[calc(100%-40px)] object-contain drop-shadow-2xl"
+                  priority
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -709,7 +750,7 @@ export default async function HomePage() {
   const supabase = await createClient();
 
   // ONLY fetch published items from Supabase — drafts are strictly excluded!
-  const [{ data: dbPrograms }, { data: dbBranches }] = await Promise.all([
+  const [{ data: dbPrograms }, { data: dbBranches }, { data: heroVideos }] = await Promise.all([
     supabase
       .from('programs')
       .select('*')
@@ -720,14 +761,22 @@ export default async function HomePage() {
       .select('*')
       .eq('published', true)
       .order('sort_order', { ascending: true }),
+    supabase
+      .from('videos')
+      .select('*')
+      .eq('published', true)
+      .eq('featured', true)
+      .order('sort_order', { ascending: true })
+      .limit(1),
   ]);
 
   const programs = dbPrograms && dbPrograms.length > 0 ? dbPrograms : FALLBACK_PROGRAMS;
   const branches = dbBranches && dbBranches.length > 0 ? dbBranches : FALLBACK_BRANCHES;
+  const heroVideo = heroVideos && heroVideos.length > 0 ? heroVideos[0] : null;
 
   return (
     <>
-      <HeroSection />
+      <HeroSection heroVideo={heroVideo} />
       <TrustBar />
       <IntroSection />
       <ProgramsSection programs={programs} />
