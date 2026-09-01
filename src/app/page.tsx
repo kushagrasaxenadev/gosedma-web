@@ -91,25 +91,10 @@ function getProgramIcon(slug: string, category?: string) {
   return Target;
 }
 
-function parseVideoEmbed(url: string) {
-  if (!url) return null;
-  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
-  if (ytMatch) {
-    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}`;
-  }
-  const driveFileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  const driveIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  const driveId = driveFileMatch?.[1] || driveIdMatch?.[1];
-  if (driveId) {
-    return `https://drive.google.com/file/d/${driveId}/preview`;
-  }
-  return url;
-}
+import { VideoEmbedCard } from '@/components/ui/video-embed-card';
 
 // ─── HERO SECTION ────────────────────────────────────────
 function HeroSection({ heroVideo }: { heroVideo: any }) {
-  const embedUrl = heroVideo?.youtube_url ? parseVideoEmbed(heroVideo.youtube_url) : null;
-
   return (
     <section className="relative bg-gradient-hero text-white overflow-hidden pattern-overlay">
       {/* Decorative arcs */}
@@ -157,16 +142,13 @@ function HeroSection({ heroVideo }: { heroVideo: any }) {
 
           {/* 1st Initial Site View Frame: Featured Video OR Official Crest */}
           <div className="relative flex justify-center w-full max-w-xl mx-auto lg:max-w-none">
-            {embedUrl ? (
+            {heroVideo && heroVideo.youtube_url ? (
               <div className="w-full">
                 <div className="relative rounded-2xl overflow-hidden border-2 border-brand-green/40 shadow-2xl bg-black aspect-video group">
-                  <iframe
-                    src={embedUrl}
+                  <VideoEmbedCard
+                    url={heroVideo.youtube_url}
                     title={heroVideo.title || 'Featured Academy Video'}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                    loading="lazy"
+                    thumbnailUrl={heroVideo.thumbnail_url}
                   />
                 </div>
                 <div className="mt-3 flex items-center justify-between px-1">

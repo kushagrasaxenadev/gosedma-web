@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { Badge } from '@/components/ui/badge';
-import { Video as VideoIcon, ExternalLink, Play } from 'lucide-react';
+import { Video as VideoIcon, ExternalLink } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
+import { VideoEmbedCard } from '@/components/ui/video-embed-card';
+import { getVideoInfo } from '@/lib/video';
 
 export const revalidate = 0;
 
@@ -9,42 +11,6 @@ export const metadata: Metadata = {
   title: 'Videos',
   description: 'GOSEDMA training videos, technique demonstrations, competition highlights, and academy events.',
 };
-
-function parseVideoUrl(url: string) {
-  if (!url) return { provider: 'unknown', id: null, embedUrl: '', thumbnailUrl: null };
-
-  // 1. YouTube
-  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
-  if (ytMatch) {
-    const id = ytMatch[1];
-    return {
-      provider: 'youtube',
-      id,
-      embedUrl: `https://www.youtube-nocookie.com/embed/${id}`,
-      thumbnailUrl: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
-    };
-  }
-
-  // 2. Google Drive
-  const driveFileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  const driveIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  const driveId = driveFileMatch?.[1] || driveIdMatch?.[1];
-  if (driveId) {
-    return {
-      provider: 'googledrive',
-      id: driveId,
-      embedUrl: `https://drive.google.com/file/d/${driveId}/preview`,
-      thumbnailUrl: null,
-    };
-  }
-
-  return {
-    provider: 'direct',
-    id: null,
-    embedUrl: url,
-    thumbnailUrl: null,
-  };
-}
 
 export default async function VideosPage() {
   const supabase = await createClient();
@@ -92,40 +58,26 @@ export default async function VideosPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {(videoList as any[]).map((video: any) => {
-                const parsed = parseVideoUrl(video.youtube_url);
-                const thumbUrl = video.thumbnail_url || parsed.thumbnailUrl;
+                const info = getVideoInfo(video.youtube_url);
 
                 return (
                   <div
                     key={video.id}
                     className="card overflow-hidden group hover:border-brand-green/30 transition flex flex-col"
                   >
-                    {/* Video Player / Embed */}
-                    <div className="aspect-video bg-black relative overflow-hidden">
-                      {parsed.embedUrl ? (
-                        <iframe
-                          src={parsed.embedUrl}
-                          title={video.title}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          className="w-full h-full border-0"
-                          loading="lazy"
-                        />
-                      ) : thumbUrl ? (
-                        <img src={thumbUrl} alt={video.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-brand-deep-navy text-white/40">
-                          <VideoIcon className="w-12 h-12" />
-                        </div>
-                      )}
-                    </div>
+                    {/* Video Player Card with Fallback */}
+                    <VideoEmbedCard
+                      url={video.youtube_url}
+                      title={video.title}
+                      thumbnailUrl={video.thumbnail_url}
+                    />
 
                     {/* Meta info */}
                     <div className="p-5 flex-1 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-muted text-foreground-secondary">
-                            {parsed.provider === 'googledrive' ? 'Google Drive' : 'YouTube'}
+                            {info.provider === 'googledrive' ? 'Google Drive' : 'YouTube'}
                           </span>
                           {video.category && (
                             <Badge variant="navy" className="text-[10px]">
@@ -150,7 +102,7 @@ export default async function VideosPage() {
 
                       <div className="mt-4 pt-3 border-t border-border-light flex items-center justify-between text-xs">
                         <a
-                          href={video.youtube_url}
+                          href={info.sourceUrl || video.youtube_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-brand-navy dark:text-brand-green-light hover:underline inline-flex items-center gap-1 font-semibold"

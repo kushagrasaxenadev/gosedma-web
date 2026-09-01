@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Video, Plus, Edit3, Trash2, Eye, EyeOff, Star, ExternalLink, X, Check, AlertCircle, PlayCircle, Sparkles } from 'lucide-react';
+import { getVideoInfo, extractYouTubeId, extractGoogleDriveId } from '@/lib/video';
 
 interface VideoItem {
   id: string;
@@ -15,42 +16,6 @@ interface VideoItem {
   published: boolean;
   sort_order: number;
   created_at: string;
-}
-
-export function parseVideoUrl(url: string) {
-  if (!url) return { provider: 'unknown', id: null, embedUrl: '', thumbnailUrl: null };
-
-  // 1. YouTube
-  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
-  if (ytMatch) {
-    const id = ytMatch[1];
-    return {
-      provider: 'youtube',
-      id,
-      embedUrl: `https://www.youtube-nocookie.com/embed/${id}`,
-      thumbnailUrl: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
-    };
-  }
-
-  // 2. Google Drive
-  const driveFileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  const driveIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  const driveId = driveFileMatch?.[1] || driveIdMatch?.[1];
-  if (driveId) {
-    return {
-      provider: 'googledrive',
-      id: driveId,
-      embedUrl: `https://drive.google.com/file/d/${driveId}/preview`,
-      thumbnailUrl: null,
-    };
-  }
-
-  return {
-    provider: 'direct',
-    id: null,
-    embedUrl: url,
-    thumbnailUrl: null,
-  };
 }
 
 export default function AdminVideosPage() {
@@ -126,9 +91,11 @@ export default function AdminVideosPage() {
       return;
     }
 
-    const parsed = parseVideoUrl(formData.video_url.trim());
-    if (parsed.provider === 'unknown' || !parsed.embedUrl) {
-      setFormError('Please enter a valid YouTube or Google Drive link.');
+    const info = getVideoInfo(formData.video_url.trim());
+    if (info.provider === 'invalid') {
+      setFormError(
+        'Please enter a valid YouTube video link (e.g. youtube.com/watch?v=..., youtu.be/...) or Google Drive link.'
+      );
       return;
     }
 
@@ -143,7 +110,7 @@ export default function AdminVideosPage() {
     const payload = {
       title: formData.title.trim(),
       youtube_url: formData.video_url.trim(),
-      thumbnail_url: parsed.thumbnailUrl,
+      thumbnail_url: info.thumbnailUrl,
       category: formData.category.trim() || null,
       description: formData.description.trim() || null,
       featured: formData.featured,
@@ -247,13 +214,12 @@ export default function AdminVideosPage() {
     if (!error) {
       setVideos(prev => prev.filter(v => v.id !== id));
       setSuccessMessage('Video deleted.');
-      setTimeout(() => setSuccessMessage(null), 3000);
     } else {
       alert('Error deleting video: ' + error.message);
     }
   };
 
-  const previewInfo = parseVideoUrl(formData.video_url);
+  const previewInfo = getVideoInfo(formData.video_url);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -312,7 +278,7 @@ export default function AdminVideosPage() {
           </div>
         ) : (
           videos.map(video => {
-            const parsed = parseVideoUrl(video.youtube_url);
+            const parsed = getVideoInfo(video.youtube_url);
             const thumbUrl = video.thumbnail_url || parsed.thumbnailUrl;
 
             return (
