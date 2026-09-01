@@ -1,17 +1,39 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Award, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SITE_CONFIG } from '@/lib/constants';
+import { createClient } from '@/lib/supabase/server';
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Founder — Richa Gaur',
   description: `Richa Gaur — Founder of GOSEDMA (${SITE_CONFIG.fullName}). A dedicated martial artist and visionary behind ${SITE_CONFIG.city}'s premier multi-discipline academy.`,
 };
 
-export default function FounderPage() {
+const CREDENTIAL_ICONS: Record<string, string> = {
+  award: '🏆',
+  championship: '🥇',
+  certification: '📜',
+  recognition: '🌟',
+  media: '📺',
+};
+
+export default async function FounderPage() {
+  const supabase = await createClient();
+
+  // ONLY fetch published credentials — drafts are strictly excluded!
+  const { data: credentials } = await supabase
+    .from('founder_credentials')
+    .select('*')
+    .eq('published', true)
+    .order('sort_order', { ascending: true });
+
+  const credList = credentials || [];
+
   return (
     <>
       {/* Hero */}
@@ -79,16 +101,75 @@ export default function FounderPage() {
               women&apos;s empowerment programs, and corporate training sessions.
             </p>
           </div>
-
-          {/* Note about verification */}
-          <div className="mt-8 p-4 rounded-lg bg-muted border border-border-light">
-            <p className="text-xs text-muted-foreground italic">
-              Detailed credentials, awards, and competition achievements will be published upon
-              verification. For the most current information, please contact the academy directly.
-            </p>
-          </div>
         </div>
       </section>
+
+      {/* Dynamic Founder Credentials & Honors */}
+      {credList.length > 0 && (
+        <section className="section-padding bg-muted/40 border-y border-border-light">
+          <div className="container-wide">
+            <div className="text-center mb-10">
+              <Badge variant="green" className="mb-3">Honors & Milestones</Badge>
+              <h2 className="section-title section-title-center font-heading text-3xl">
+                Credentials & Achievements
+              </h2>
+              <p className="text-foreground-secondary text-sm max-w-xl mx-auto mt-2">
+                Certified qualifications, championship titles, and public recognitions earned by Richa Gaur.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {credList.map((cred: any) => {
+                const icon = CREDENTIAL_ICONS[cred.credential_type] || '🏆';
+                return (
+                  <div
+                    key={cred.id}
+                    className={`card p-6 flex flex-col justify-between transition hover:shadow-md ${
+                      cred.featured
+                        ? 'border-amber-400/50 bg-amber-50/10 dark:bg-amber-950/10 ring-1 ring-amber-400/20'
+                        : ''
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-3xl">{icon}</span>
+                        <div className="flex items-center gap-1.5">
+                          {cred.year && (
+                            <span className="text-xs font-mono font-bold bg-muted px-2 py-0.5 rounded text-foreground-secondary">
+                              {cred.year}
+                            </span>
+                          )}
+                          {cred.featured && (
+                            <span className="text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded flex items-center gap-1 shadow-xs">
+                              <Star className="w-3 h-3 fill-current" /> Featured
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <h3 className="font-heading font-bold text-lg text-foreground mb-1">
+                        {cred.title}
+                      </h3>
+
+                      {(cred.event_name || cred.result || cred.location) && (
+                        <p className="text-xs font-medium text-brand-green mb-2">
+                          {[cred.event_name, cred.result, cred.location].filter(Boolean).join(' • ')}
+                        </p>
+                      )}
+
+                      {cred.description && (
+                        <p className="text-xs text-foreground-secondary leading-relaxed">
+                          {cred.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Philosophy */}
       <section className="section-padding bg-muted">

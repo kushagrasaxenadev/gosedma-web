@@ -4,13 +4,27 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ContactForm } from '@/components/forms/contact-form';
 import { SITE_CONFIG } from '@/lib/constants';
+import { createClient } from '@/lib/supabase/server';
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Contact Us',
   description: `Contact GOSEDMA — the ${SITE_CONFIG.fullName} in ${SITE_CONFIG.city}. Call, WhatsApp, or email us for programme enquiries, trial bookings, and workshop requests.`,
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const supabase = await createClient();
+
+  // ONLY fetch published branches — drafts are strictly excluded!
+  const { data: dbBranches } = await supabase
+    .from('branches')
+    .select('*')
+    .eq('published', true)
+    .order('sort_order', { ascending: true });
+
+  const branches = dbBranches || [];
+
   const contactMethods = [
     {
       icon: Phone,
@@ -33,19 +47,6 @@ export default function ContactPage() {
       value: SITE_CONFIG.email,
       href: `mailto:${SITE_CONFIG.email}`,
       description: 'Email us anytime',
-    },
-  ];
-
-  const branches = [
-    {
-      name: 'Malviya Nagar',
-      address: 'Malviya Nagar, Jaipur, Rajasthan',
-      note: 'Primary training center',
-    },
-    {
-      name: 'Sitapura',
-      address: 'Sitapura, Jaipur, Rajasthan',
-      note: 'Training center',
     },
   ];
 
@@ -86,7 +87,7 @@ export default function ContactPage() {
                   href={method.href}
                   target={method.external ? '_blank' : undefined}
                   rel={method.external ? 'noopener noreferrer' : undefined}
-                  className="card p-5 flex items-center gap-4 hover:border-brand-green/30"
+                  className="card p-5 flex items-center gap-4 hover:border-brand-green/30 transition"
                 >
                   <div className="w-12 h-12 rounded-full bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center shrink-0 group-hover:bg-brand-green/10 transition-colors">
                     <method.icon className="w-6 h-6 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
@@ -108,32 +109,36 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Branches */}
-          <div className="mb-12">
-            <div className="text-center mb-10">
-              <Badge variant="navy" className="mb-4">Our Locations</Badge>
-              <h2 className="section-title section-title-center font-heading text-3xl">
-                Visit Our Training Centres
-              </h2>
-            </div>
+          {/* Dynamic Branches from Database (Excludes Drafts) */}
+          {branches.length > 0 && (
+            <div className="mb-12">
+              <div className="text-center mb-10">
+                <Badge variant="navy" className="mb-4">Our Locations</Badge>
+                <h2 className="section-title section-title-center font-heading text-3xl">
+                  Visit Our Training Centres
+                </h2>
+              </div>
 
-            <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              {branches.map((branch) => (
-                <div key={branch.name} className="card p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <MapPin className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
-                    <div>
-                      <h3 className="font-heading font-bold text-lg text-foreground">
-                        {branch.name}
-                      </h3>
-                      <p className="text-sm text-foreground-secondary">{branch.address}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{branch.note}</p>
+              <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                {branches.map((branch: any) => (
+                  <div key={branch.id} className="card p-6">
+                    <div className="flex items-start gap-3 mb-3">
+                      <MapPin className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="font-heading font-bold text-lg text-foreground">
+                          {branch.name}
+                        </h3>
+                        <p className="text-sm text-foreground-secondary">{branch.address}</p>
+                        {branch.phone && (
+                          <p className="text-xs text-muted-foreground mt-1">Tel: {branch.phone}</p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Hours */}
           <div className="max-w-md mx-auto card p-6 text-center">
