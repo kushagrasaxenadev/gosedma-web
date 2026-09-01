@@ -10,13 +10,15 @@ interface AdminLayoutProps {
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const supabase = await createClient();
 
+  const isDemoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
   const cookieStore = await cookies();
   const demoCookie = cookieStore.get('gosedma_demo_admin');
   
   let profile: { role: string; full_name: string | null; avatar_url: string | null } | null = null;
 
-  if (demoCookie?.value === 'true') {
-    profile = { role: 'super_admin', full_name: 'Demo Admin', avatar_url: null };
+  // Demo bypass is ONLY permitted when database is not configured (local preview mode)
+  if (isDemoMode && demoCookie?.value === 'true') {
+    profile = { role: 'super_admin', full_name: 'Demo Admin (Preview Mode)', avatar_url: null };
   } else {
     const {
       data: { user },

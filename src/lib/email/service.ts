@@ -9,13 +9,15 @@ export async function sendEmail(payload: SendEmailPayload): Promise<boolean> {
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@gosedma.com';
 
   if (!apiKey) {
-    console.warn('RESEND_API_KEY is not defined. Email send skipped. Log output:');
-    console.log('--- EMAIL DUMP ---');
-    console.log(`To: ${payload.to}`);
-    console.log(`From: ${fromEmail}`);
-    console.log(`Subject: ${payload.subject}`);
-    console.log(`Body: ${payload.html}`);
-    console.log('------------------');
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('RESEND_API_KEY is not defined. Email send skipped. Log output:');
+      console.log('--- EMAIL DUMP ---');
+      console.log(`To: ${payload.to}`);
+      console.log(`From: ${fromEmail}`);
+      console.log(`Subject: ${payload.subject}`);
+      console.log(`Body: ${payload.html}`);
+      console.log('------------------');
+    }
     return true; // Return true so flow doesn't break
   }
 
