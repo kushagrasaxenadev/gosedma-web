@@ -102,7 +102,30 @@ Here is an honest breakdown of the infrastructure and cost:
 
 ---
 
-## 5. What This Website Brings to the Client (Pitch & Value)
+## 5. Free Tier Constraints & How to Stay on the Free Plan Forever
+
+While Supabase provides a powerful free plan, here are the exact limits and how our codebase is designed to stay comfortably within them:
+
+| Resource | Free Tier Constraint | Real-World Impact for GOSEDMA | Best Practice to Stay Free |
+| :--- | :--- | :--- | :--- |
+| **Database Size** | **Max 500 MB** Postgres storage | ~100,000 to 150,000 lead enquiries and text records | Staff can click **"Export CSV"** in the admin panel to archive leads once a year. 500 MB will last years. |
+| **Auto-Pausing** | **Pauses after 7 days** of no API requests | Database sleeps if inactive; requires 1 click in Supabase to restore | • **For Demos**: Use the built-in **Mock Mode** (never sleeps, zero cloud dependency).<br>• **For Production**: Set up a free check on [UptimeRobot.com](https://uptimerobot.com) to ping the site every few hours, keeping it awake 24/7. |
+| **Bandwidth (Egress)** | **Max 5 GB / month** | Ample for tens of thousands of page views | Vercel's Edge CDN caches assets, offloading bandwidth away from Supabase. |
+| **File Storage** | **Max 1 GB** for images/files | ~2,500+ optimized WebP photos | • **Videos**: Handled via YouTube embeds (`youtube_url`), consuming **0 MB** of Supabase storage.<br>• **Photos**: Upload compressed WebP/JPEG images under 500 KB. |
+| **Authentication** | **Up to 50,000 MAU** | Only needed for staff/admins (~5 users) | Easily fits within the limit. |
+| **Compute** | **Shared CPU / 500 MB RAM** | Fast enough for hundreds of simultaneous visitors | Lightweight Next.js serverless functions keep queries fast. |
+| **Project Limit** | **2 active free projects** per account | 1 project for GOSEDMA (`gosedma-db`) | Leaves 1 free project slot for future projects. |
+
+### 🎯 Strategy Recommendation:
+1. **For Demos / Client Presentation**:
+   - Keep the live site or localhost running in **Demo / Mock DB mode** (`NEXT_PUBLIC_SUPABASE_URL` left blank). It works 100% of the time, requires zero cloud maintenance, and will never pause.
+2. **For Production Deployment**:
+   - Link the free Supabase project when Richa Gaur and the academy are ready to start collecting real customer leads.
+   - You only ever need a paid plan ($25/mo) if the academy scales to a nationwide chain with tens of thousands of students.
+
+---
+
+## 6. What This Website Brings to the Client (Pitch & Value)
 
 When presenting this website to the client (Richa Gaur & GOSEDMA team), here are the key commercial and operational benefits:
 
