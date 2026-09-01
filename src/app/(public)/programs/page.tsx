@@ -18,18 +18,21 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SITE_CONFIG } from '@/lib/constants';
+import { createClient } from '@/lib/supabase/server';
+
+export const revalidate = 0; // Dynamic server-render for immediate admin updates
 
 export const metadata: Metadata = {
   title: 'Programs',
   description: `Explore GOSEDMA's martial arts and self-defence programs — Taekwondo, Muay Thai, Krav Maga, MMA, Women's Self Defence, and more in ${SITE_CONFIG.city}.`,
 };
 
-const programs = [
+// Fallback programs if database is completely empty
+const FALLBACK_PROGRAMS = [
   {
     title: 'Taekwondo',
     category: 'Martial Art',
     description: 'Olympic-style martial art focusing on speed, precision kicks, forms (poomsae), and discipline. Suitable for all ages from children to adults.',
-    icon: Target,
     slug: 'taekwondo',
     featured: true,
   },
@@ -37,7 +40,6 @@ const programs = [
     title: 'Muay Thai / Thai Kickboxing',
     category: 'Striking Art',
     description: 'The art of eight limbs — powerful striking techniques using fists, elbows, knees, and shins. Excellent for fitness and self-defence.',
-    icon: Swords,
     slug: 'muay-thai',
     featured: true,
   },
@@ -45,7 +47,6 @@ const programs = [
     title: 'Krav Maga',
     category: 'Self Defence',
     description: 'Israel-developed self-defence system designed for real-world survival situations. Practical, direct, and effective.',
-    icon: Shield,
     slug: 'krav-maga',
     featured: true,
   },
@@ -53,7 +54,6 @@ const programs = [
     title: 'MMA',
     category: 'Mixed Martial Arts',
     description: 'Mixed Martial Arts combining striking, grappling, and ground techniques from multiple disciplines.',
-    icon: Dumbbell,
     slug: 'mma',
     featured: true,
   },
@@ -61,79 +61,65 @@ const programs = [
     title: "Women's Self Defence",
     category: 'Self Defence',
     description: 'Specialized self-defence designed for women — practical techniques, situational awareness, and confidence building.',
-    icon: Heart,
     slug: 'womens-self-defence',
     featured: true,
   },
   {
-    title: "Children's Self Defence",
-    category: 'Self Defence',
-    description: 'Age-appropriate self-defence training for children focused on safety, awareness, and anti-bullying skills.',
-    icon: Users,
-    slug: 'childrens-self-defence',
-  },
-  {
-    title: 'Military Tactical Self Defence',
-    category: 'Self Defence',
-    description: 'Advanced tactical defence techniques drawing from military combat systems for real-world preparedness.',
-    icon: Shield,
-    slug: 'military-tactical-self-defence',
-  },
-  {
-    title: 'Survival Self Defence',
-    category: 'Self Defence',
-    description: 'Practical survival-focused self-defence for extreme situations with emphasis on escape and evasion.',
-    icon: Flame,
-    slug: 'survival-self-defence',
-  },
-  {
-    title: 'Stunt Training',
-    category: 'Performance',
-    description: 'Professional stunt training combining martial arts with performance choreography and safe falling techniques.',
-    icon: Sparkles,
-    slug: 'stunt-training',
-  },
-  {
-    title: 'Gymnastics / Poomsae',
-    category: 'Movement Arts',
-    description: 'Gymnastics and traditional martial arts forms (poomsae) for flexibility, strength, and artistic expression.',
-    icon: Sparkles,
-    slug: 'gymnastics-poomsae',
-  },
-  {
-    title: 'Fitness & Conditioning',
-    category: 'Fitness',
-    description: 'Martial arts-based fitness training for strength, endurance, flexibility, and overall conditioning.',
-    icon: Dumbbell,
-    slug: 'fitness-conditioning',
-  },
-  {
-    title: 'Competition Athlete Training',
-    category: 'Elite Training',
-    description: 'Elite preparation for national and international martial arts competitions with specialised coaching.',
-    icon: Trophy,
-    slug: 'competition-athlete-training',
-    featured: true,
-  },
-  {
-    title: 'Instructor Programs',
-    category: 'Professional',
-    description: 'Assistant trainer and instructor development programs for aspiring martial arts professionals.',
-    icon: GraduationCap,
-    slug: 'instructor-programs',
+    title: 'Competition Training',
+    category: 'Elite Sport',
+    description: 'Rigorous preparation for state, national, and international martial arts competitions under World Taekwondo and WAKO standards.',
+    slug: 'competition-training',
+    featured: false,
   },
 ];
 
-export default function ProgramsPage() {
-  const featured = programs.filter((p) => p.featured);
-  const others = programs.filter((p) => !p.featured);
+const ICON_MAP: Record<string, any> = {
+  taekwondo: Target,
+  'muay-thai': Swords,
+  'krav-maga': Shield,
+  mma: Dumbbell,
+  'womens-self-defence': Heart,
+  'childrens-self-defence': Users,
+  'corporate-self-defence': GraduationCap,
+  'competition-training': Trophy,
+  'fitness-conditioning': Flame,
+  'summer-camps': Sparkles,
+};
+
+function getProgramIcon(slug: string, category?: string) {
+  if (ICON_MAP[slug]) return ICON_MAP[slug];
+  if (category === 'Self Defence') return Shield;
+  if (category === 'Striking Art') return Swords;
+  if (category === 'Elite Sport') return Trophy;
+  return Target;
+}
+
+export default async function ProgramsPage() {
+  const supabase = await createClient();
+
+  // ONLY fetch published programs — drafts are strictly excluded!
+  const { data: dbPrograms } = await supabase
+    .from('programs')
+    .select('*')
+    .eq('published', true)
+    .order('sort_order', { ascending: true });
+
+  const rawPrograms = dbPrograms && dbPrograms.length > 0 ? dbPrograms : FALLBACK_PROGRAMS;
+
+  const programs = (rawPrograms as any[]).map((p: any) => ({
+    ...p,
+    icon: getProgramIcon(p.slug, p.category),
+  }));
+
+  const featured = programs.filter((p: any) => p.featured);
+  const others = programs.filter((p: any) => !p.featured);
 
   return (
     <>
       {/* Hero */}
       <section className="bg-gradient-hero text-white pattern-overlay relative">
         <div className="container-wide py-16 md:py-24 relative z-10">
-          <div className="max-w-2xl">
+          <div className="max-w-3xl">
             <Badge variant="green" className="mb-4 text-white bg-brand-green/20 border border-brand-green/30">
               Training Programs
             </Badge>
@@ -164,65 +150,73 @@ export default function ProgramsPage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featured.map((program) => (
-              <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
-                <Card className="h-full p-6 group-hover:border-brand-green/30">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
-                      <program.icon className="w-6 h-6 text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
+            {featured.map((program: any) => {
+              const IconComp = program.icon;
+              return (
+                <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
+                  <Card className="h-full p-6 group-hover:border-brand-green/30">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
+                        <IconComp className="w-6 h-6 text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
+                      </div>
+                      <Badge variant="muted">{program.category}</Badge>
                     </div>
-                    <Badge variant="muted">{program.category}</Badge>
-                  </div>
-                  <h3 className="font-heading font-bold text-xl text-foreground mb-2">
-                    {program.title}
-                  </h3>
-                  <p className="text-sm text-foreground-secondary leading-relaxed mb-4">
-                    {program.description}
-                  </p>
-                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors">
-                    Learn More
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Card>
-              </Link>
-            ))}
+                    <h3 className="font-heading font-bold text-xl text-foreground mb-2">
+                      {program.title}
+                    </h3>
+                    <p className="text-sm text-foreground-secondary leading-relaxed mb-4">
+                      {program.description || program.short_description}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors">
+                      Learn More
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* All Programs */}
-      <section className="section-padding bg-muted">
-        <div className="container-wide">
-          <div className="mb-10">
-            <Badge variant="green" className="mb-4">All Programs</Badge>
-            <h2 className="section-title font-heading text-3xl md:text-4xl">
-              Specialized Training
-            </h2>
-          </div>
+      {/* All Programs / Specialized Training */}
+      {others.length > 0 && (
+        <section className="section-padding bg-muted">
+          <div className="container-wide">
+            <div className="mb-10">
+              <Badge variant="green" className="mb-4">All Programs</Badge>
+              <h2 className="section-title font-heading text-3xl md:text-4xl">
+                Specialized Training
+              </h2>
+            </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {others.map((program) => (
-              <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
-                <Card className="h-full p-6 group-hover:border-brand-navy/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <program.icon className="w-5 h-5 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
-                    <Badge variant="muted">{program.category}</Badge>
-                  </div>
-                  <h3 className="font-heading font-bold text-lg text-foreground mb-2">
-                    {program.title}
-                  </h3>
-                  <p className="text-sm text-foreground-secondary leading-relaxed mb-3">
-                    {program.description}
-                  </p>
-                  <span className="text-sm font-semibold text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors">
-                    Learn More →
-                  </span>
-                </Card>
-              </Link>
-            ))}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {others.map((program: any) => {
+                const IconComp = program.icon;
+                return (
+                  <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
+                    <Card className="h-full p-6 group-hover:border-brand-navy/30">
+                      <div className="flex items-center gap-3 mb-3">
+                        <IconComp className="w-5 h-5 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
+                        <Badge variant="muted">{program.category}</Badge>
+                      </div>
+                      <h3 className="font-heading font-bold text-lg text-foreground mb-2">
+                        {program.title}
+                      </h3>
+                      <p className="text-sm text-foreground-secondary leading-relaxed mb-3">
+                        {program.description || program.short_description}
+                      </p>
+                      <span className="text-sm font-semibold text-brand-navy dark:text-brand-green dark:text-brand-green-light group-hover:text-brand-green transition-colors">
+                        Learn More →
+                      </span>
+                    </Card>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="section-padding">

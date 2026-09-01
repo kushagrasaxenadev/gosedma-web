@@ -36,18 +36,34 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => { fetchSettings(); }, []);
 
   const fetchSettings = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('site_settings').select('*');
-    if (!error && data) {
+    const { data, error: fetchErr } = await supabase.from('site_settings').select('*');
+    if (!fetchErr && data) {
       const map: Record<string, string> = {};
-      (data as SiteSetting[]).forEach(s => {
-        if (typeof s.value === 'object' && s.value !== null && 'value' in s.value) {
-          map[s.key] = String(s.value.value);
-        } else {
-          map[s.key] = JSON.stringify(s.value);
+      (data as any[]).forEach(s => {
+        const raw = s.value;
+        if (typeof raw === 'object' && raw !== null && 'value' in raw) {
+          map[s.key] = String(raw.value);
+        } else if (typeof raw === 'string') {
+          map[s.key] = raw;
+        }
+
+        // Unpack structured seed data if present
+        if (s.key === 'social_links' && typeof raw === 'object' && raw !== null) {
+          if (raw.youtube && !map['youtube_url']) map['youtube_url'] = String(raw.youtube);
+          if (raw.facebook && !map['facebook_url']) map['facebook_url'] = String(raw.facebook);
+          if (raw.instagram && !map['instagram_url']) map['instagram_url'] = String(raw.instagram);
+        }
+        if (s.key === 'contact_details' && typeof raw === 'object' && raw !== null) {
+          if (raw.phone && !map['primary_phone']) map['primary_phone'] = String(raw.phone);
+          if (raw.email && !map['primary_email']) map['primary_email'] = String(raw.email);
+          if (raw.whatsapp && !map['whatsapp_number']) map['whatsapp_number'] = String(raw.whatsapp);
+          if (raw.address && !map['primary_address']) map['primary_address'] = String(raw.address);
         }
       });
       setSettings(map);
@@ -58,20 +74,32 @@ export default function AdminSettingsPage() {
   const handleChange = (key: string, value: string) => {
     setSettings(prev => ({ ...prev, [key]: value }));
     setSaved(false);
+    setError(null);
   };
 
   const saveAllSettings = async () => {
     setSaving(true);
-    for (const [key, value] of Object.entries(settings)) {
-      await supabase.from('site_settings').upsert({
-        key,
-        value: { value },
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'key' });
+    setError(null);
+    try {
+      for (const [key, value] of Object.entries(settings)) {
+        if (!key || key === 'social_links' || key === 'contact_details') continue;
+        const { error: upsertErr } = await supabase.from('site_settings').upsert({
+          key,
+          value: { value: String(value) },
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'key' });
+
+        if (upsertErr) {
+          throw new Error(`Failed to save "${formatLabel(key)}": ${upsertErr.message}`);
+        }
+      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3500);
+    } catch (err: any) {
+      setError(err.message || 'Failed to save settings.');
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
   };
 
   const formatLabel = (key: string) =>
@@ -88,16 +116,22 @@ export default function AdminSettingsPage() {
           <p className="text-sm text-foreground-secondary mt-1">Configure site-wide contact details, social links, and hero content.</p>
         </div>
         <button onClick={saveAllSettings} disabled={saving}
-          className="flex items-center gap-2 px-5 py-2.5 bg-brand-navy text-white text-sm font-semibold rounded-lg hover:bg-brand-navy-light transition shadow-sm disabled:opacity-50">
+          className="flex items-center gap-2 px-5 py-2.5 bg-brand-navy text-white text-sm font-semibold rounded-lg hover:bg-brand-navy-light transition shadow-sm disabled:opacity-50 cursor-pointer">
           {saving ? (
             <><div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> Saving...</>
           ) : saved ? (
-            <><Save className="w-4 h-4" /> Saved!</>
+            <><Save className="w-4 h-4" /> Saved Successfully!</>
           ) : (
             <><Save className="w-4 h-4" /> Save All Settings</>
           )}
         </button>
       </div>
+
+      {error && (
+        <div className="p-3.5 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm rounded-lg flex items-center gap-2">
+          <span>{error}</span>
+        </div>
+      )}
 
       {loading ? (
         <div className="bg-surface rounded-xl border border-border-light p-12 text-center text-foreground-secondary">

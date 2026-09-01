@@ -15,11 +15,81 @@ import {
   Swords,
   Dumbbell,
   Heart,
+  Flame,
+  Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { SITE_CONFIG } from '@/lib/constants';
+import { createClient } from '@/lib/supabase/server';
+
+export const revalidate = 0; // Dynamic server-render for immediate admin updates
+
+const FALLBACK_PROGRAMS = [
+  {
+    title: 'Taekwondo',
+    description: 'Olympic-style martial arts focusing on speed, precision kicks, and discipline. For all ages.',
+    slug: 'taekwondo',
+  },
+  {
+    title: 'Muay Thai',
+    description: 'The art of eight limbs — powerful striking techniques for fitness and self-defence.',
+    slug: 'muay-thai',
+  },
+  {
+    title: 'Krav Maga',
+    description: 'Real-world self-defence system designed for practical survival situations.',
+    slug: 'krav-maga',
+  },
+  {
+    title: 'MMA',
+    description: 'Mixed Martial Arts training combining striking, grappling, and ground techniques.',
+    slug: 'mma',
+  },
+  {
+    title: "Women's Self Defence",
+    description: 'Specialized self-defence designed for women — practical, empowering, and confidence-building.',
+    slug: 'womens-self-defence',
+  },
+  {
+    title: 'Competition Training',
+    description: 'Elite athlete preparation for national and international martial arts competitions.',
+    slug: 'competition-training',
+  },
+];
+
+const FALLBACK_BRANCHES = [
+  {
+    name: 'Malviya Nagar',
+    description: 'Our primary training center with full facilities.',
+    slug: 'malviya-nagar',
+  },
+  {
+    name: 'Sitapura',
+    description: 'Training center serving the Sitapura area.',
+    slug: 'sitapura',
+  },
+];
+
+const ICON_MAP: Record<string, any> = {
+  taekwondo: Target,
+  'muay-thai': Swords,
+  'krav-maga': Shield,
+  mma: Dumbbell,
+  'womens-self-defence': Heart,
+  'childrens-self-defence': Users,
+  'competition-training': Trophy,
+  'fitness-conditioning': Flame,
+};
+
+function getProgramIcon(slug: string, category?: string) {
+  if (ICON_MAP[slug]) return ICON_MAP[slug];
+  if (category === 'Self Defence') return Shield;
+  if (category === 'Striking Art') return Swords;
+  if (category === 'Elite Sport') return Trophy;
+  return Target;
+}
 
 // ─── HERO SECTION ────────────────────────────────────────
 function HeroSection() {
@@ -103,93 +173,53 @@ function HeroSection() {
 // ─── TRUST BAR ───────────────────────────────────────────
 function TrustBar() {
   const stats = [
-    { icon: Calendar, label: 'Years of Excellence', value: `Since ${SITE_CONFIG.establishedYear}` },
-    { icon: Users, label: 'Training Programs', value: '15+' },
-    { icon: MapPin, label: 'Training Centers', value: '2 Branches' },
-    { icon: Shield, label: 'Disciplines', value: 'Multi-Style' },
+    { value: '15+', label: 'Years Experience' },
+    { value: '10,000+', label: 'Students Trained' },
+    { value: '500+', label: 'School Workshops' },
+    { value: '100%', label: 'Certified Coaches' },
   ];
 
   return (
-    <section className="container-wide -mt-6 relative z-10 mb-12">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="card p-5 text-center hover:border-brand-green/30"
-          >
-            <stat.icon className="w-7 h-7 mx-auto mb-2 text-brand-green" />
-            <p className="text-lg font-heading font-bold text-foreground">
-              {stat.value}
-            </p>
-            <p className="text-xs text-muted-foreground">{stat.label}</p>
-          </div>
-        ))}
+    <div className="bg-brand-deep-navy text-white py-6 border-y border-white/10">
+      <div className="container-wide">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {stats.map((stat) => (
+            <div key={stat.label}>
+              <p className="font-heading font-extrabold text-2xl md:text-3xl text-brand-green">
+                {stat.value}
+              </p>
+              <p className="text-xs md:text-sm text-white/70 mt-0.5">{stat.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
 
-// ─── INTRODUCTION SECTION ────────────────────────────────
+// ─── INTRO SECTION ───────────────────────────────────────
 function IntroSection() {
   return (
     <section className="section-padding bg-surface">
-      <div className="container-narrow text-center">
-        <Badge variant="navy" className="mb-4">About GOSEDMA</Badge>
-        <h2 className="section-title section-title-center font-heading text-3xl md:text-4xl mb-6">
-          Where Discipline Meets Excellence
-        </h2>
-        <p className="text-lg text-foreground-secondary leading-relaxed max-w-2xl mx-auto">
-          GOSEDMA — the {SITE_CONFIG.fullName} — is a premier multi-discipline martial arts
-          academy in {SITE_CONFIG.city}, {SITE_CONFIG.state}. Founded by <strong>Richa Gaur</strong>,
-          we provide world-class training in Taekwondo, Muay Thai, Krav Maga, MMA, and specialized
-          self-defence programs for all ages and skill levels.
-        </p>
+      <div className="container-wide">
+        <div className="max-w-3xl mx-auto text-center">
+          <Badge variant="navy" className="mb-4">About GOSEDMA</Badge>
+          <h2 className="section-title section-title-center font-heading text-3xl md:text-4xl mb-6">
+            Empowering Lives Through Martial Arts Excellence
+          </h2>
+          <p className="text-foreground-secondary leading-relaxed text-base md:text-lg">
+            Founded by <strong>Richa Gaur</strong>, GOSEDMA is Rajasthan&apos;s premier institute for self-defence and
+            martial arts education. We combine traditional martial discipline with modern, practical defence techniques
+            to create confident, capable individuals of all ages.
+          </p>
+        </div>
       </div>
     </section>
   );
 }
 
 // ─── CORE PROGRAMS ───────────────────────────────────────
-function ProgramsSection() {
-  const programs = [
-    {
-      title: 'Taekwondo',
-      description: 'Olympic-style martial arts focusing on speed, precision kicks, and discipline. For all ages.',
-      icon: Target,
-      slug: 'taekwondo',
-    },
-    {
-      title: 'Muay Thai',
-      description: 'The art of eight limbs — powerful striking techniques for fitness and self-defence.',
-      icon: Swords,
-      slug: 'muay-thai',
-    },
-    {
-      title: 'Krav Maga',
-      description: 'Real-world self-defence system designed for practical survival situations.',
-      icon: Shield,
-      slug: 'krav-maga',
-    },
-    {
-      title: 'MMA',
-      description: 'Mixed Martial Arts training combining striking, grappling, and ground techniques.',
-      icon: Dumbbell,
-      slug: 'mma',
-    },
-    {
-      title: "Women's Self Defence",
-      description: 'Specialized self-defence designed for women — practical, empowering, and confidence-building.',
-      icon: Heart,
-      slug: 'womens-self-defence',
-    },
-    {
-      title: 'Competition Training',
-      description: 'Elite athlete preparation for national and international martial arts competitions.',
-      icon: Trophy,
-      slug: 'competition-training',
-    },
-  ];
-
+function ProgramsSection({ programs }: { programs: any[] }) {
   return (
     <section className="section-padding">
       <div className="container-wide">
@@ -205,25 +235,28 @@ function ProgramsSection() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {programs.map((program) => (
-            <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
-              <Card className="h-full p-6 group-hover:border-brand-green/30 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-4 group-hover:bg-brand-green/10 transition-colors">
-                  <program.icon className="w-6 h-6 text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
-                </div>
-                <h3 className="font-heading font-bold text-xl text-foreground mb-2">
-                  {program.title}
-                </h3>
-                <p className="text-sm text-foreground-secondary leading-relaxed mb-4">
-                  {program.description}
-                </p>
-                <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
-                  Learn More
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </Card>
-            </Link>
-          ))}
+          {programs.map((program) => {
+            const IconComp = getProgramIcon(program.slug, program.category);
+            return (
+              <Link href={`/programs/${program.slug}`} key={program.slug} className="group">
+                <Card className="h-full p-6 group-hover:border-brand-green/30 transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-4 group-hover:bg-brand-green/10 transition-colors">
+                    <IconComp className="w-6 h-6 text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors" />
+                  </div>
+                  <h3 className="font-heading font-bold text-xl text-foreground mb-2">
+                    {program.title}
+                  </h3>
+                  <p className="text-sm text-foreground-secondary leading-relaxed mb-4">
+                    {program.short_description || program.description}
+                  </p>
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
+                    Learn More
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
 
         <div className="text-center mt-10">
@@ -408,7 +441,7 @@ function FounderSection() {
             <h2 className="section-title font-heading text-3xl md:text-4xl mb-5">
               Richa Gaur
             </h2>
-            <p className="text-foreground-secondary leading-relaxed mb-4">
+                  <p className="text-foreground-secondary leading-relaxed mb-4">
               A dedicated martial artist and visionary, Richa Gaur founded GOSEDMA with the
               mission of making world-class martial arts training accessible in Jaipur. With
               years of experience across multiple disciplines, she leads the academy with a
@@ -432,20 +465,7 @@ function FounderSection() {
 }
 
 // ─── BRANCHES SECTION ────────────────────────────────────
-function BranchesSection() {
-  const branches = [
-    {
-      name: 'Malviya Nagar',
-      description: 'Our primary training center with full facilities.',
-      slug: 'malviya-nagar',
-    },
-    {
-      name: 'Sitapura',
-      description: 'Training center serving the Sitapura area.',
-      slug: 'sitapura',
-    },
-  ];
-
+function BranchesSection({ branches }: { branches: any[] }) {
   return (
     <section className="section-padding bg-muted">
       <div className="container-wide">
@@ -458,7 +478,7 @@ function BranchesSection() {
 
         <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
           {branches.map((branch) => (
-            <Link href={`/branches/${branch.slug}`} key={branch.slug} className="group">
+            <Link href={`/branches/${branch.slug || branch.id}`} key={branch.slug || branch.id} className="group">
               <Card className="p-6 text-center group-hover:border-brand-navy/30">
                 <div className="w-14 h-14 mx-auto rounded-full bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-4 group-hover:bg-brand-navy/10 dark:bg-brand-green/10 transition-colors">
                   <MapPin className="w-7 h-7 text-brand-navy dark:text-brand-green-light" />
@@ -466,7 +486,7 @@ function BranchesSection() {
                 <h3 className="font-heading font-bold text-xl text-foreground mb-1">
                   {branch.name}
                 </h3>
-                <p className="text-sm text-muted-foreground mb-3">{branch.description}</p>
+                <p className="text-sm text-muted-foreground mb-3">{branch.description || branch.address}</p>
                 <span className="text-sm font-semibold text-brand-navy dark:text-brand-green-light group-hover:text-brand-green transition-colors">
                   View Details →
                 </span>
@@ -489,13 +509,16 @@ function GalleryPreview() {
           <h2 className="section-title section-title-center font-heading text-3xl md:text-4xl">
             Training in Action
           </h2>
+          <p className="text-foreground-secondary mt-2 max-w-xl mx-auto">
+            A glimpse into daily training, self-defence workshops, and championship preparations.
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="col-span-2 md:col-span-1 md:row-span-2 rounded-xl overflow-hidden shadow-md">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+          <div className="row-span-2 rounded-xl overflow-hidden shadow-md">
             <Image
-              src="/images/gallery/training-session.png"
-              alt="GOSEDMA training session"
+              src="/images/gallery/kick-demonstration.png"
+              alt="High kick demonstration at GOSEDMA"
               width={400}
               height={500}
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
@@ -597,86 +620,40 @@ function TestimonialsSection() {
   const testimonials = [
     {
       name: 'Priya Sharma',
-      role: 'Parent of a Taekwondo student',
-      quote:
-        'My daughter joined GOSEDMA two years ago and the transformation is incredible. She is more confident, disciplined, and fit. The coaches genuinely care about each child.',
-      stars: 5,
+      role: 'Mother of 8-year-old student',
+      text: 'GOSEDMA has completely transformed my daughter’s confidence. The coaches are disciplined, patient, and truly care about each child’s development.',
       branch: 'Malviya Nagar',
     },
     {
-      name: 'Arjun Mehta',
-      role: 'Krav Maga & MMA student',
-      quote:
-        'I trained at several gyms before joining GOSEDMA. The level of technical instruction here is unmatched. Coach Richa Gaur\'s dedication to each student is what makes this place special.',
-      stars: 5,
+      name: 'Rahul Verma',
+      role: 'Adult Muay Thai & Krav Maga Practitioner',
+      text: 'The best martial arts training in Jaipur. The instructors have genuine expertise and focus on practical techniques and fitness. Highly recommended!',
       branch: 'Sitapura',
     },
     {
-      name: 'Deepika Verma',
-      role: 'Self Defence Workshop attendee',
-      quote:
-        'The school workshop session was eye-opening for our students. It was practical, empowering and completely changed how my students think about personal safety.',
-      stars: 5,
-      branch: 'School Program',
-    },
-    {
-      name: 'Raj Agarwal',
-      role: 'Summer Camp parent',
-      quote:
-        'Both my kids attended the summer camp and loved it. Excellent facilities, professional trainers, and a great mix of fun and serious learning. Highly recommend!',
-      stars: 5,
-      branch: 'Malviya Nagar',
-    },
-    {
-      name: 'Sneha Joshi',
-      role: 'Muay Thai student',
-      quote:
-        'I joined for fitness but fell in love with Muay Thai. Three months in and I am stronger, faster, and more focused. GOSEDMA has the best trainers in Jaipur.',
-      stars: 5,
-      branch: 'Sitapura',
-    },
-    {
-      name: 'Rahul Bhatia',
-      role: 'Competition Training graduate',
-      quote:
-        'Won my first state-level Taekwondo medal after training under GOSEDMA\'s competition program. The structured coaching and focus on mental strength made all the difference.',
-      stars: 5,
-      branch: 'Malviya Nagar',
+      name: 'Dr. Ananya Mathur',
+      role: 'School Principal & Workshop Coordinator',
+      text: 'Richa Ma’am and her team conducted an extraordinary self-defence workshop for our senior school girls. Truly empowering and life-changing skills.',
+      branch: 'School Workshops',
     },
   ];
 
   return (
-    <section className="section-padding bg-muted/40 dark:bg-background">
+    <section className="section-padding bg-surface">
       <div className="container-wide">
         <div className="text-center mb-12">
-          <Badge variant="green" className="mb-4">Student Stories</Badge>
-          <h2 className="section-title section-title-center font-heading font-extrabold text-3xl md:text-4xl mb-4">
-            What Our Students Say
+          <Badge variant="navy" className="mb-4">Testimonials</Badge>
+          <h2 className="section-title section-title-center font-heading text-3xl md:text-4xl">
+            Stories from Our Students & Parents
           </h2>
-          <p className="text-foreground-secondary max-w-2xl mx-auto">
-            Hundreds of students and families have transformed their lives through GOSEDMA training.
-          </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="card p-6 flex flex-col gap-4"
-            >
-              {/* Stars */}
-              <div className="flex items-center gap-0.5">
-                {Array.from({ length: t.stars }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-brand-green text-brand-green" />
-                ))}
-              </div>
-
-              {/* Quote */}
-              <blockquote className="text-foreground-secondary text-sm leading-relaxed flex-1">
-                &ldquo;{t.quote}&rdquo;
-              </blockquote>
-
-              {/* Person */}
+            <div key={t.name} className="card p-6 flex flex-col justify-between">
+              <p className="text-sm text-foreground-secondary leading-relaxed mb-4 italic">
+                &ldquo;{t.text}&rdquo;
+              </p>
               <div className="pt-3 border-t border-border-light dark:border-border">
                 <p className="font-heading font-bold text-foreground text-sm">{t.name}</p>
                 <p className="text-xs text-muted-foreground">{t.role}</p>
@@ -691,7 +668,6 @@ function TestimonialsSection() {
     </section>
   );
 }
-
 
 function FinalCTA() {
   return (
@@ -728,18 +704,37 @@ function FinalCTA() {
   );
 }
 
-// ─── HOMEPAGE ────────────────────────────────────────────
-export default function HomePage() {
+// ─── HOMEPAGE (DYNAMIC DATA) ─────────────────────────────
+export default async function HomePage() {
+  const supabase = await createClient();
+
+  // ONLY fetch published items from Supabase — drafts are strictly excluded!
+  const [{ data: dbPrograms }, { data: dbBranches }] = await Promise.all([
+    supabase
+      .from('programs')
+      .select('*')
+      .eq('published', true)
+      .order('sort_order', { ascending: true }),
+    supabase
+      .from('branches')
+      .select('*')
+      .eq('published', true)
+      .order('sort_order', { ascending: true }),
+  ]);
+
+  const programs = dbPrograms && dbPrograms.length > 0 ? dbPrograms : FALLBACK_PROGRAMS;
+  const branches = dbBranches && dbBranches.length > 0 ? dbBranches : FALLBACK_BRANCHES;
+
   return (
     <>
       <HeroSection />
       <TrustBar />
       <IntroSection />
-      <ProgramsSection />
+      <ProgramsSection programs={programs} />
       <WhySection />
       <SchoolWorkshopSection />
       <FounderSection />
-      <BranchesSection />
+      <BranchesSection branches={branches} />
       <GalleryPreview />
       <TestimonialsSection />
       <FAQPreview />

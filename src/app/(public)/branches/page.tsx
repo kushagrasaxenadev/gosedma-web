@@ -1,17 +1,20 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { MapPin, Phone, MessageCircle, Mail, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SITE_CONFIG } from '@/lib/constants';
+import { createClient } from '@/lib/supabase/server';
+
+export const revalidate = 0; // Dynamic server-render for immediate admin updates
 
 export const metadata: Metadata = {
   title: 'Our Branches',
   description: `Find GOSEDMA training centres in ${SITE_CONFIG.city}, ${SITE_CONFIG.state}. Visit our branches in Malviya Nagar and Sitapura.`,
 };
 
-const branches = [
+const FALLBACK_BRANCHES = [
   {
     name: 'Malviya Nagar',
     slug: 'malviya-nagar',
@@ -30,7 +33,18 @@ const branches = [
   },
 ];
 
-export default function BranchesPage() {
+export default async function BranchesPage() {
+  const supabase = await createClient();
+
+  // ONLY fetch published branches — drafts are strictly excluded!
+  const { data: dbBranches } = await supabase
+    .from('branches')
+    .select('*')
+    .eq('published', true)
+    .order('sort_order', { ascending: true });
+
+  const branches = dbBranches && dbBranches.length > 0 ? dbBranches : FALLBACK_BRANCHES;
+
   return (
     <>
       <section className="bg-gradient-hero text-white pattern-overlay relative">
@@ -57,44 +71,60 @@ export default function BranchesPage() {
       <section className="section-padding">
         <div className="container-wide">
           <div className="grid sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {branches.map((branch) => (
-              <Card key={branch.slug} className="p-8">
+            {(branches as any[]).map((branch: any) => (
+              <Card key={branch.slug || branch.id} className="p-8">
                 <div className="w-14 h-14 rounded-full bg-brand-navy/5 dark:bg-brand-green/10 flex items-center justify-center mb-5">
                   <MapPin className="w-7 h-7 text-brand-navy dark:text-brand-green dark:text-brand-green-light" />
                 </div>
                 <h2 className="font-heading font-bold text-2xl text-foreground mb-2">
                   {branch.name}
                 </h2>
-                <p className="text-foreground-secondary mb-4">{branch.description}</p>
+                <p className="text-foreground-secondary mb-4 leading-relaxed">
+                  {branch.description || 'Professional martial arts training facility.'}
+                </p>
 
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2 text-sm text-foreground-secondary">
                     <MapPin className="w-4 h-4 text-brand-green shrink-0" />
                     {branch.address}
                   </div>
-                  <a href={`tel:${branch.phone}`} className="flex items-center gap-2 text-sm text-foreground-secondary hover:text-brand-navy dark:text-brand-green transition-colors">
-                    <Phone className="w-4 h-4 text-brand-green shrink-0" />
-                    {branch.phone}
-                  </a>
+                  {branch.phone && (
+                    <a
+                      href={`tel:${branch.phone}`}
+                      className="flex items-center gap-2 text-sm text-foreground-secondary hover:text-brand-navy dark:hover:text-brand-green transition-colors"
+                    >
+                      <Phone className="w-4 h-4 text-brand-green shrink-0" />
+                      {branch.phone}
+                    </a>
+                  )}
                 </div>
 
                 <div className="flex gap-2">
-                  <a href={`tel:${branch.phone}`}>
-                    <Button variant="primary" size="sm">
-                      <Phone className="w-3.5 h-3.5" />
-                      Call
+                  {branch.phone && (
+                    <a href={`tel:${branch.phone}`}>
+                      <Button variant="primary" size="sm">
+                        <Phone className="w-3.5 h-3.5" />
+                        Call
+                      </Button>
+                    </a>
+                  )}
+                  {branch.whatsapp && (
+                    <a
+                      href={`https://wa.me/${branch.whatsapp.replace(/[^0-9]/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button variant="whatsapp" size="sm">
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        WhatsApp
+                      </Button>
+                    </a>
+                  )}
+                  <Link href={`/branches/${branch.slug}`} className="ml-auto">
+                    <Button variant="outline" size="sm">
+                      Details →
                     </Button>
-                  </a>
-                  <a
-                    href={`https://wa.me/${branch.whatsapp}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button variant="whatsapp" size="sm">
-                      <MessageCircle className="w-3.5 h-3.5" />
-                      WhatsApp
-                    </Button>
-                  </a>
+                  </Link>
                 </div>
               </Card>
             ))}
